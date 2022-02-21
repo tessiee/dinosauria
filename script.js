@@ -1,1229 +1,609 @@
-// INTRO POP-UP
-const introScreen = document.getElementById("intro-screen");
-const introButton = document.getElementById("closeIntro");
+// OBJECT CLASSES
 
-function closeIntroPopUp() {
-  introScreen.classList.add("hide-screen");
-  enableScrollingIntro();
-}
-
-function disableScrollingIntro() {
-  document.body.style.overflow = "hidden";
-}
-
-function enableScrollingIntro() {
-  document.body.style.overflow = "";
-}
-
-introButton.addEventListener("click", closeIntroPopUp);
-
-// HEADER ANIMATION
-const animationBox = document.getElementById("animation-box");
-let maxXstar = window.innerWidth - 100;
-
-animationBox.innerHTML = `<canvas height="550" width = "${maxXstar}" class="head-animation" id="head-animation">
-</canvas>
-<canvas height="550" width = "${maxXstar}" class="alien-animation" id="alien-animation">
-</canvas>`;
-
-const headAnimationCanvas = document.getElementById("head-animation");
-const alienAnimationCanvas = document.getElementById("alien-animation");
-const ctxHeadAnimation = headAnimationCanvas.getContext("2d");
-const ctxAlienAnimation = alienAnimationCanvas.getContext("2d");
-let requestIdHeadAnimation;
-let requestIdAlienAnimation;
-let animationStarsArray = [];
-let aliensArray3 = [];
-let particles = [];
-let maxStars = 150;
-let pause = 90;
-let start = 0;
-let randomXstar;
-let randomYstar;
-let side = 0;
-let marginX = -50;
-let directionA = 1;
-let AC;
-
-class Particle {
-  constructor(x, y, radius, dx, dy) {
-    this.x = x;
-    this.y = y;
-    this.radius = radius;
-    this.dx = dx;
-    this.dy = dy;
-    this.alpha = 1;
-  }
-  draw() {
-    ctxAlienAnimation.save();
-    ctxAlienAnimation.globalAlpha = this.alpha;
-    ctxAlienAnimation.fillStyle = "red";
-    ctxAlienAnimation.beginPath();
-    ctxAlienAnimation.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-    ctxAlienAnimation.fill();
-    ctxAlienAnimation.restore();
-  }
-  update() {
-    this.draw();
-    this.alpha -= 0.01;
-    this.x += this.dx;
-    this.y += this.dy;
-  }
-}
-
-class Alien3 {
+class Cloud {
   constructor(canvasName) {
-    this.x = maxXstar * side + marginX;
-    this.y = canvasName.height * (Math.random() * 0.8 + 0.1);
-    this.dx = 2.5 * directionA * (Math.random() * 1.6 + 1.0);
+    this.x = canvasName.width + (Math.random() * 300 + 20);
+    this.y = Math.random() * 60 + 20;
+    this.dx = -Math.random() * 1.6 - 1.0;
     this.dy = 0;
-    this.size = 3;
+    this.speed = Math.random() * 0.3 + 0.2;
+    this.size = 5;
 
-    this.draw = function (gameCanvas) {
+    this.draw = function (canvasContext) {
       drawRoundObject(
-        gameCanvas,
-        "#05db05",
+        canvasContext,
+        "#ffffff",
         this.x,
         this.y,
         this.size,
-        -100,
-        Math.PI - 0.5,
-        true
+        0,
+        Math.PI * 2
       );
       drawRoundObject(
-        gameCanvas,
-        "#FF0000",
-        this.x - 1.5,
-        this.y,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
+        canvasContext,
+        "#ffffff",
+        this.x + 9,
+        this.y - 4.5,
+        this.size * 1.8,
+        0,
+        Math.PI * 2
       );
       drawRoundObject(
-        gameCanvas,
-        "#FF0000",
-        this.x + 1.5,
+        canvasContext,
+        "#ffffff",
+        this.x + 18,
         this.y,
-        1,
-        -100,
-        Math.PI - 0.5,
+        this.size,
+        0,
+        Math.PI * 2
+      );
+    };
+
+    this.reset = function (canvasName) {
+      this.x = canvasName.width + (Math.random() * 100 + 20);
+      this.y = Math.random() * 60 + 20;
+      this.speed = Math.random() * 0.3 + 0.2;
+    };
+  }
+}
+
+class Bird {
+  constructor(canvasName) {
+    this.x = canvasName.width + (Math.random() * 300 + 20);
+    this.y = Math.random() * 40 + 20;
+    this.dx = -1;
+    this.dy = 0;
+    this.speed = 1;
+    this.size = 3;
+
+    this.draw = function (canvasContext) {
+      drawEllipseObject(
+        canvasContext,
+        "#000000",
+        this.x,
+        this.y,
+        this.size * 1.4,
+        4,
+        0,
+        0,
+        Math.PI * 2,
         true
       );
       drawEllipseObject(
-        gameCanvas,
-        "#FF0000",
-        this.x,
-        this.y + 4,
-        10,
+        canvasContext,
+        "#000000",
+        this.x + 4,
+        this.y - 4,
+        this.size * 0.6,
+        4,
+        2.1,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#000000",
+        this.x - 5,
+        this.y - 4,
+        this.size * 2,
+        2,
+        0.7,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#000000",
+        this.x + 6,
+        this.y + 3,
+        this.size * 2,
+        2,
+        3.4,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#000000",
+        this.x - 5,
+        this.y + 3,
+        this.size * 0.5,
         2,
         0,
         0,
         Math.PI * 2,
         true
       );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x - 3,
-        this.y + 4.2,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x + 3,
-        this.y + 4.2,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
+      drawEllipseObject(
+        canvasContext,
+        "#000000",
         this.x - 7,
-        this.y + 4.2,
+        this.y + 5,
+        this.size * 0.08,
+        2,
         1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x + 7,
-        this.y + 4.2,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x - 11,
-        this.y + 4.2,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x + 11,
-        this.y + 4.2,
-        1,
-        -100,
-        Math.PI - 0.5,
+        0,
+        Math.PI * 2,
         true
       );
     };
 
     this.reset = function (canvasName) {
-      this.x = maxXstar * side + marginX;
-      this.y = canvasName.height * (Math.random() * 0.8 + 0.1);
-      this.dx = 2.5 * directionA * (Math.random() * 1.6 + 1.0);
+      this.x = canvasName.width + (Math.random() * 100 + 20);
+      this.y = Math.random() * 40 + 20;
     };
   }
 }
 
-class animationStars {
+class Dinosaur {
   constructor() {
-    this.x = randomXstar;
-    this.y = randomYstar;
-    this.radius = 1;
-    this.color = "#3b2c00";
+    this.x = 100;
+    this.y = dinoY;
+    this.dx = 0;
+    this.dy = 0;
+    this.speed = 1;
+    this.size = 5;
 
-    this.draw = function (gameCanvas) {
-      gameCanvas.beginPath();
-      gameCanvas.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
-      gameCanvas.fillStyle = this.color;
-      gameCanvas.fill();
-      gameCanvas.closePath();
+    this.draw = function (canvasContext) {
+      drawEllipseObject(
+        canvasContext,
+        "#00ad37",
+        this.x - 32,
+        this.y + 27,
+        this.size * 0.5,
+        9,
+        0.5,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00b439",
+        this.x - 31,
+        this.y + 25,
+        this.size * 0.4,
+        9,
+        0.55,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00b439",
+        this.x - 26,
+        this.y + 27,
+        this.size * 0.7,
+        9,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00ad37",
+        this.x - 19,
+        this.y + 27,
+        this.size * 0.7,
+        9,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00b439",
+        this.x - 9,
+        this.y + 27,
+        this.size * 0.7,
+        9,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00ad37",
+        this.x - 2,
+        this.y + 27,
+        this.size * 0.7,
+        9,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawRectObject(
+        canvasContext,
+        "#00ad37",
+        this.x - 7.5,
+        this.y + 25,
+        this.size * 1.8,
+        -25 - necklength
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00ad37",
+        this.x - 15,
+        this.y + 22,
+        this.size * 3,
+        9,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00b439",
+        this.x - 14.5,
+        this.y + 22.8,
+        this.size * 3,
+        9,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawRectObject(
+        canvasContext,
+        "#00b439",
+        this.x - 5.5,
+        this.y + 25,
+        this.size * 1.2,
+        -25 - necklength
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00b439",
+        this.x - 5,
+        this.y - 4 - necklength,
+        this.size * 0.4,
+        2,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00ad37",
+        this.x + 2,
+        this.y - 4 - necklength,
+        this.size * 0.4,
+        2,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00b439",
+        this.x + 2,
+        this.y + 1 - necklength,
+        this.size * 2,
+        5,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#000000",
+        this.x,
+        this.y - necklength,
+        this.size * 0.4,
+        1.5,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#ffffff",
+        this.x - 0.5,
+        this.y - 1 - necklength,
+        this.size * 0.2,
+        1,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#000000",
+        this.x + 8.5,
+        this.y + 1.5 - necklength,
+        this.size * 0.1,
+        0.4,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#000000",
+        this.x + 10.5,
+        this.y + 1.5 - necklength,
+        this.size * 0.1,
+        0.4,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
     };
   }
 }
 
-function setAnimationWidth() {
-  maxXstar = window.innerWidth - 100;
-  headAnimationCanvas.width = maxXstar;
-  alienAnimationCanvas.width = maxXstar;
-}
+class Tree {
+  constructor(canvasName) {
+    this.x = canvasName.width + (Math.random() * 300 + 20);
+    this.y = Math.random() * -40 + 140;
+    this.dx = -0.5;
+    this.dy = 0;
+    this.speed = 1;
+    this.size = (Math.random() - 4) * 1;
 
-function fillAnimationStarsArray(gameCanvas, maxStars) {
-  for (var i = 0; i < 100; i++) {
-    randomXstar = Math.random() * maxXstar - 20 + 20;
-    randomYstar = Math.random() * 250 + 0;
-    animationStarsArray[i] = new animationStars();
-    animationStarsArray[i].draw(gameCanvas);
-  }
-  for (var i = 100; i < 140; i++) {
-    randomXstar = Math.random() * maxXstar - 20 + 20;
-    randomYstar = Math.random() * 150 + 250;
-    animationStarsArray[i] = new animationStars();
-    animationStarsArray[i].draw(gameCanvas);
-  }
-  for (var i = 140; i < maxStars; i++) {
-    randomXstar = Math.random() * maxXstar - 20 + 20;
-    randomYstar = Math.random() * 150 + 400;
-    animationStarsArray[i] = new animationStars();
-    animationStarsArray[i].draw(gameCanvas);
-  }
-}
+    this.draw = function (canvasContext) {
+      drawEllipseObject(
+        canvasContext,
+        "#005e02",
+        this.x - 3,
+        this.y - 17,
+        3,
+        4,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#005e02",
+        this.x + 1,
+        this.y - 9,
+        3,
+        4,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#005e02",
+        this.x - 5,
+        this.y - 7,
+        3,
+        4,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawRectObject(
+        canvasContext,
+        "#894c00",
+        this.x,
+        this.y,
+        this.size,
+        this.size * 4
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#005e02",
+        this.x,
+        this.y - 15,
+        3,
+        4,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#005e02",
+        this.x - 2,
+        this.y - 12,
+        3,
+        3,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#005e02",
+        this.x - 6,
+        this.y - 13,
+        3,
+        3,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#005e02",
+        this.x,
+        this.y - 7,
+        3,
+        3,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+    };
 
-function fillAliensArray3(canvasName) {
-  for (var i = 0; i < 3; i++) {
-    aliensArray3[i] = new Alien3(canvasName);
-    if (side == 0) {
-      side = 1;
-      marginX = 50;
-      directionA = -1;
-    } else {
-      side = 0;
-      marginX = -50;
-      directionA = 1;
-    }
-  }
-}
+    this.move = function (direction) {
+      this.speed = 1 * direction;
+    };
 
-function drawAliensArray3(gameCanvas) {
-  for (var i = 0; i < aliensArray3.length; i++) {
-    aliensArray3[i].draw(gameCanvas);
-  }
-}
+    this.still = function () {
+      this.speed = 0;
+    };
 
-function moveAliensArray3(canvasName) {
-  for (var i = 0; i < aliensArray3.length; i++) {
-    aliensArray3[i].y += aliensArray3[i].dy;
-    aliensArray3[i].x += aliensArray3[i].dx;
-
-    if (aliensArray3[i].x > canvasName.width + 60 || aliensArray3[i].x < -60) {
-      if (side == 0) {
-        side = 1;
-        marginX = 50;
-        directionA = -1;
-      } else {
-        side = 0;
-        marginX = -50;
-        directionA = 1;
-      }
-      aliensArray3[i].reset(canvasName);
-    }
-  }
-}
-
-function resetAliensArray3(canvasName) {
-  for (var i = 0; i < aliensArray3.length; i++) {
-    if (side == 0) {
-      side = 1;
-      marginX = 50;
-      directionA = -1;
-    } else {
-      side = 0;
-      marginX = -50;
-      directionA = 1;
-    }
-    aliensArray3[i].reset(canvasName);
-  }
-}
-
-function alienCollision(AC, canvasName) {
-  for (let AI = 0; AI < aliensArray3.length; AI++) {
-    if (AC !== AI) {
-      if (
-        aliensArray3[AC].x > aliensArray3[AI].x - 10 &&
-        aliensArray3[AC].x < aliensArray3[AI].x + 10 &&
-        aliensArray3[AC].y > aliensArray3[AI].y - 10 &&
-        aliensArray3[AC].y < aliensArray3[AI].y + 10
-      ) {
-        for (i = 0; i <= 150; i++) {
-          let dx = (Math.random() - 0.5) * Math.random();
-          let dy = (Math.random() - 0.5) * Math.random();
-          let radius = Math.random() * 2;
-          let particle = new Particle(
-            aliensArray3[AC].x,
-            aliensArray3[AC].y,
-            radius,
-            dx,
-            dy
-          );
-
-          particles.push(particle);
-        }
-        aliensArray3[AI].dx = 0;
-        aliensArray3[AC].dx = 0;
-        explode();
-        setTimeout(() => {
-          aliensArray3[AC].reset(canvasName);
-          aliensArray3[AI].reset(canvasName);
-        }, 500);
-      }
-    }
-  }
-}
-
-function explode() {
-  particles.forEach((particle, i) => {
-    if (particle.alpha <= 0) {
-      particles.splice(i, 1);
-    } else particle.update();
-  });
-
-  requestAnimationFrame(explode);
-}
-
-fillAliensArray3(alienAnimationCanvas);
-
-function drawHeadAnimation() {
-  emptyCanvas(ctxHeadAnimation, headAnimationCanvas);
-  fillAnimationStarsArray(ctxHeadAnimation, maxStars, animationStarsArray);
-}
-
-function headAnimationAction(current) {
-  if (start === 0) {
-    start = current;
-  }
-
-  if (current - start >= pause) {
-    drawHeadAnimation();
-    start = current;
-  }
-  requestIdHeadAnimation = requestAnimationFrame(headAnimationAction);
-}
-requestIdHeadAnimation = requestAnimationFrame(headAnimationAction);
-
-function drawAlienAnimation() {
-  emptyCanvas(ctxAlienAnimation, alienAnimationCanvas);
-  drawAliensArray3(ctxAlienAnimation, alienAnimationCanvas);
-}
-
-function headAlienAction() {
-  drawAlienAnimation();
-  moveAliensArray3(alienAnimationCanvas);
-  alienCollision(0, alienAnimationCanvas);
-  alienCollision(1, alienAnimationCanvas);
-  alienCollision(2, alienAnimationCanvas);
-  requestIdAlienAnimation = requestAnimationFrame(headAlienAction);
-}
-headAlienAction();
-
-//SIDEBAR
-const sidebar = document.getElementById("sidebar");
-const openSidebar = document.getElementById("openSidebar");
-
-function highlightSidebar() {
-  sidebar.classList.add("highlighted");
-}
-
-function unHighLightSidebar() {
-  sidebar.classList.remove("highlighted");
-}
-
-function openCloseSidebar() {
-  sidebar.classList.contains("hideSidebar")
-    ? (sidebar.classList.remove("hideSidebar"),
-      openSidebar.classList.remove("hideSidebarButton"))
-    : (sidebar.classList.add("hideSidebar"),
-      openSidebar.classList.add("hideSidebarButton"));
-}
-
-openSidebar.addEventListener("mouseenter", highlightSidebar);
-openSidebar.addEventListener("mouseleave", unHighLightSidebar);
-openSidebar.addEventListener("click", openCloseSidebar);
-
-//SIDEBAR LINKS
-const menuLinks = document
-  .getElementById("menuLinks")
-  .getElementsByTagName("a");
-const drawingsBox = document.getElementById("drawingsBox");
-const closeDrawings = document.getElementById("closeDrawings");
-const drawingsContainer = document.getElementById("drawingsContainer");
-let otherDrawing =
-  (document.getElementById("nextDrawing"),
-  document.getElementById("previousDrawing"));
-const nextDrawing = document.getElementById("nextDrawing");
-const previousDrawing = document.getElementById("previousDrawing");
-let subjectDrawing;
-let subjectDrawing2;
-let animalDrawings = new Array(
-  document.getElementById("animalsDrawings").childElementCount - 1
-);
-let plantDrawings = new Array(
-  document.getElementById("plantsDrawings").childElementCount - 1
-);
-let instrumentDrawings = new Array(
-  document.getElementById("instrumentsDrawings").childElementCount - 1
-);
-let foodDrawings = new Array(
-  document.getElementById("foodsDrawings").childElementCount - 1
-);
-let toyDrawings = new Array(
-  document.getElementById("toysDrawings").childElementCount - 1
-);
-let exclusiveDrawings = new Array(
-  document.getElementById("exclusivesDrawings").childElementCount - 1
-);
-let DX;
-let DS;
-
-function fillDrawingsArrays() {
-  for (x = 0; x < animalDrawings.length; x++) {
-    animalDrawings[x] = document.getElementById(`animalDrawing${x + 1}`);
-  }
-  for (x = 0; x < plantDrawings.length; x++) {
-    plantDrawings[x] = document.getElementById(`plantDrawing${x + 1}`);
-  }
-  for (x = 0; x < instrumentDrawings.length; x++) {
-    instrumentDrawings[x] = document.getElementById(
-      `instrumentDrawing${x + 1}`
-    );
-  }
-  for (x = 0; x < foodDrawings.length; x++) {
-    foodDrawings[x] = document.getElementById(`foodDrawing${x + 1}`);
-  }
-  for (x = 0; x < toyDrawings.length; x++) {
-    toyDrawings[x] = document.getElementById(`toyDrawing${x + 1}`);
-  }
-  for (x = 0; x < exclusiveDrawings.length; x++) {
-    exclusiveDrawings[x] = document.getElementById(`exclusiveDrawing${x + 1}`);
-  }
-}
-fillDrawingsArrays();
-
-function showFirstDrawing() {
-  let drawingsSubject = event.target.parentElement.id.slice(0, -1);
-  switch (drawingsSubject) {
-    case "animal":
-      DS = animalDrawings;
-      break;
-    case "plant":
-      DS = plantDrawings;
-      break;
-    case "instrument":
-      DS = instrumentDrawings;
-      break;
-    case "food":
-      DS = foodDrawings;
-      break;
-    case "toy":
-      DS = toyDrawings;
-      break;
-    case "exclusive":
-      DS = exclusiveDrawings;
-      break;
-  }
-  for (x = 0; x < DS.length; x++) DS[x].classList.add("hide-drawing");
-  DX = 0;
-  DS[DX].classList.remove("hide-drawing");
-}
-
-function showNextDrawing() {
-  DS[DX].classList.add("hide-drawing");
-  if (DX == DS.length - 1) {
-    DX = 0;
-  } else {
-    DX++;
-  }
-  DS[DX].classList.remove("hide-drawing");
-}
-
-function showPreviousDrawing() {
-  DS[DX].classList.add("hide-drawing");
-  if (DX == 0) {
-    DX = DS.length - 1;
-  } else {
-    DX--;
-  }
-  DS[DX].classList.remove("hide-drawing");
-}
-
-function hideDrawings() {
-  const drawingsArr = drawingsBox.children;
-  for (x = 0; x < drawingsArr.length; x++) {
-    drawingsArr[x].classList.add("hideDrawings");
-  }
-  closeDrawings.classList.add("hideBtn");
-  otherDrawing.classList.add("hideBtn");
-  drawingsContainer.classList.remove("drawingsContainer");
-  drawingsBox.classList.add("hide-box");
-}
-
-function showDrawings() {
-  hideDrawings();
-  drawingsContainer.classList.add("drawingsContainer");
-  drawingsBox.classList.remove("hide-box");
-  subjectDrawing = event.target.parentElement.id;
-  const drawingsShown = document.getElementById(`${subjectDrawing}Drawings`);
-  showFirstDrawing();
-  drawingsShown.classList.remove("hideDrawings");
-  closeDrawings.classList.remove("hideBtn");
-  otherDrawing.classList.remove("hideBtn");
-}
-
-function closeDrawingsSidebar() {
-  if (subjectDrawing == subjectDrawing2) {
-    hideDrawings();
-    subjectDrawing2 = undefined;
-  } else {
-    subjectDrawing2 = event.target.parentElement.id;
+    this.reset = function (canvasName) {
+      this.x = canvasName.width + (Math.random() * 100 + 20);
+      this.y = Math.random() * -40 + 140;
+    };
   }
 }
 
-function closeDrawingsBtn() {
-  hideDrawings();
-  subjectDrawing2 = undefined;
-}
+class SmallRock {
+  constructor(canvasName) {
+    this.x = 150;
+    this.y = canvasName.height - 5;
+    this.dx = 0;
+    this.dy = 0;
+    this.speed = 0;
+    this.size = 1;
 
-function menulinksEventListeners() {
-  for (x = 0; x < menuLinks.length; x++) {
-    menuLinks[x].addEventListener("click", showDrawings);
-    menuLinks[x].addEventListener("click", closeDrawingsSidebar);
-  }
-}
-menulinksEventListeners();
+    this.draw = function (canvasContext) {
+      drawRectObject(
+        canvasContext,
+        "#b16100",
+        this.x,
+        canvasName.height - 10,
+        40,
+        10
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#005e02",
+        this.x + 20,
+        canvasName.height - 10,
+        20,
+        1,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+    };
 
-nextDrawing.addEventListener("click", showNextDrawing);
-previousDrawing.addEventListener("click", showPreviousDrawing);
-closeDrawings.addEventListener("click", closeDrawingsBtn);
-
-//HEAD LOGIN FORM/REGISTER FORM
-const loginBox = document.getElementById("loginBox");
-const loginForm = document.getElementById("loginForm");
-const showLoginPass = document.getElementById("showLoginPass");
-const loginContainer = document.getElementById("loginContainer");
-const registrationBox = document.getElementById("registrationBox");
-const registerForm = document.getElementById("registerForm");
-const username = document.getElementById("username");
-const email = document.getElementById("email");
-const password = document.getElementById("password");
-const confirmPassword = document.getElementById("confirmPassword");
-const showPass = document.getElementById("showPass");
-const showConfirm = document.getElementById("showConfirm");
-const regContainer = document.getElementById("reg-container");
-const loginUsername = document.getElementById("loginUsername");
-const loginPassword = document.getElementById("loginPassword");
-const loginUser = document.getElementById("loginUser");
-const helpUser = document.getElementById("helpUser");
-
-function openCloseLoginForm() {
-  closeRegistrationForm();
-  loginBox.classList.contains("hideLogin")
-    ? (loginBox.classList.remove("hideLogin"),
-      loginContainer.classList.add("login-container"))
-    : closeLoginForm();
-}
-
-function closeLoginForm() {
-  loginBox.classList.add("hideLogin");
-  loginForm.reset();
-  loginContainer.classList.remove("login-container");
-}
-
-document
-  .getElementById("openLogin")
-  .addEventListener("click", openCloseLoginForm);
-document
-  .getElementById("closeLogin")
-  .addEventListener("click", openCloseLoginForm);
-
-function showPassword() {
-  let passwordType;
-  if (event.target.id == "showLoginPass") {
-    passwordType = loginPassword;
-  } else if (event.target.id == "showPass") {
-    passwordType = password;
-  } else if (event.target.id == "showConfirm") {
-    passwordType = confirmPassword;
-  }
-
-  const type =
-    passwordType.getAttribute("type") === "password" ? "text" : "password";
-  passwordType.setAttribute("type", type);
-}
-
-showLoginPass.addEventListener("mouseenter", showPassword);
-showLoginPass.addEventListener("mouseleave", showPassword);
-
-//REGISTRATION FORM
-function openCloseRegistrationForm() {
-  closeLoginForm();
-  const position = event.target.id == "openReg" ? "button" : "text";
-
-  if (registrationBox.classList.contains("hideReg")) {
-    registrationBox.classList.add(`position-${position}`);
-    registrationBox.classList.remove("hideReg");
-    regContainer.classList.add("reg-container");
-  } else if (
-    position == "button" &&
-    registrationBox.classList.contains("position-text")
-  ) {
-    registrationBox.classList.remove("position-text");
-    registrationBox.classList.add("position-button");
-  } else {
-    closeRegistrationForm();
+    this.reset = function () {
+      this.x = 50;
+      this.y = canvasName.height - 5;
+    };
   }
 }
 
-function closeRegistrationForm() {
-  const inputFields = [];
-  for (x = 0; x < 4; x++) {
-    inputFields[x] = document.getElementById(`field${x}`);
-    inputFields[x].classList.remove("error");
-  }
-  registerForm.reset();
-  registrationBox.classList.remove("position-button", "position-text");
-  registrationBox.classList.add("hideReg");
-  regContainer.classList.remove("reg-container");
+// ANIMATION OBJECTS
+
+const animationBox = document.getElementById("animation-box");
+const animationCanvas = document.getElementById("animation-canvas");
+const ctxAnimation = animationCanvas.getContext("2d");
+let requestIdAnimation;
+let cloudsArray1 = [];
+let dinosaursArray1 = [];
+let birdsArray1 = [];
+let maxClouds = 10;
+let maxBirds = 3;
+
+//ANIMATION STARTER FUNCTIONS
+
+function fillAnimationArrays() {
+  fillCloudsArray(animationCanvas, cloudsArray1);
+  fillBirdsArray(animationCanvas, birdsArray1);
+}
+fillAnimationArrays();
+
+function drawAnimation() {
+  emptyCanvas(ctxAnimation, animationCanvas);
+  drawArrayOnCanvas(ctxAnimation, cloudsArray1);
+  drawArrayOnCanvas(ctxAnimation, birdsArray1);
 }
 
-function showError(input, message) {
-  const formControl = input.parentElement;
-  formControl.className = "registerFormField error";
-  const small = formControl.querySelector("small");
-  small.innerText = message;
+function animationAction() {
+  drawAnimation();
+  moveCloudsArray(animationCanvas, cloudsArray1);
+  moveBirdsArray(animationCanvas, birdsArray1);
+  requestIdAnimation = requestAnimationFrame(animationAction);
 }
+animationAction();
 
-function hideError(input) {
-  const formControl = input.parentElement;
-  formControl.className = "registerFormField";
-}
+// GAME OBJECTS
 
-function isValidEmail(input) {
-  if (input.value.length > 0) {
-    const email =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (email.test(input.value.trim())) {
-      hideError(input);
-    } else {
-      showError(input, "Please enter a valid email");
-    }
-  }
-}
+const gameBox = document.getElementById("game-box");
+const gameCanvas = document.getElementById("game-canvas");
+const ctxGame = gameCanvas.getContext("2d");
+let requestIdGame;
+let cloudsArray2 = [];
+let birdsArray2 = [];
+let treesArray2 = [];
+let smallRocksArray = [];
+let maxTrees = 20;
+maxSmallRocks = 2;
+let dino;
+let necklength = 0;
+let dinoY = 110;
+let dinoTurn = 0;
+let dinoJump = 0;
 
-function checkRequired(inputArr) {
-  inputArr.forEach(function (input) {
-    if (input.value.trim() === "") {
-      if (input === confirmPassword) {
-        showError(input, "Please confirm your password");
-      } else {
-        showError(input, `${getFieldName(input)} is required`);
-      }
-    } else {
-      hideError(input);
-    }
-  });
-}
-
-function checkLength(input, min, max) {
-  if (input.value.length < min && input.value.length != 0) {
-    showError(input, `Minimum length is: ${min} characters`);
-  } else if (input.value.length > max) {
-    showError(input, `Maximum length is: ${max} characters`);
-  }
-}
-
-function checkPasswordsMatch(input1, input2) {
-  if (input2.value.length > 0) {
-    if (input1.value !== input2.value) {
-      showError(input2, "Passwords do not match");
-    } else if (input1.value.length < 6) {
-      showError(input2, "Please enter a valid password");
-    } else {
-      hideError(input2);
-    }
-  }
-}
-
-function getFieldName(input) {
-  return input.id.charAt(0).toUpperCase() + input.id.slice(1);
-}
-
-registerForm.addEventListener("submit", function (registration) {
-  registration.preventDefault();
-
-  if (!checkRequired([username, email, password, confirmPassword])) {
-    checkLength(username, 5, 15);
-    checkLength(password, 6, 25);
-    isValidEmail(email);
-    checkPasswordsMatch(password, confirmPassword);
-  }
-});
-
-showPass.addEventListener("mouseenter", showPassword);
-showPass.addEventListener("mouseleave", showPassword);
-showConfirm.addEventListener("mouseenter", showPassword);
-showConfirm.addEventListener("mouseleave", showPassword);
-
-document
-  .getElementById("openReg")
-  .addEventListener("click", openCloseRegistrationForm);
-document
-  .getElementById("closeReg")
-  .addEventListener("click", openCloseRegistrationForm);
-
-//EVENT CALENDAR
-
-const eventsContainer = document.getElementById("events-container");
-const eventsBox = document.getElementById("events-box");
-const eventsFilter = document.getElementById("events-filter");
-const filterContainer = document.getElementById("filter-container");
-const eventsList = document.getElementById("events-list");
-const eventsLoader = document.getElementById("events-loader");
-let maxEvents = 8;
-let eventsInfoButtonsArr = [];
-let eventsInfoArr = [];
-
-fetch("events.json")
-  .then((res) => {
-    return res.json();
-  })
-  .then((data) => {
-    data.forEach((event) => {
-      const eventEl = document.createElement("div");
-      eventEl.classList.add("event");
-      eventEl.classList.add("hide-event");
-      eventEl.innerHTML = `
-        <div class="date">${event.date}</div>
-        <div class="event-body">
-        <h2 class="event-title">${event.title}</h2>
-        <p class="event-description">${event.description}</p>
-        <div class="extra-info hide-info">
-        <button class="open-info">&#128712;</button>
-        <p class="event-info">${event.info}</p>
-        </div>
-        </div>
-        `;
-      eventsList.appendChild(eventEl);
-    });
-  });
-
-function filterEvents(e) {
-  const events = document.querySelectorAll(".event");
-  const searchEvent = e.target.value.toUpperCase();
-
-  events.forEach((event) => {
-    const title = event.querySelector(".event-title").innerText.toUpperCase();
-    const body = event.querySelector(".event-body").innerText.toUpperCase();
-    const info = event.querySelector(".event-info").innerText.toUpperCase();
-
-    if (
-      title.indexOf(searchEvent) > -1 ||
-      body.indexOf(searchEvent) > -1 ||
-      info.indexOf(searchEvent) > -1
-    ) {
-      event.style.display = "flex";
-    } else {
-      event.style.display = "none";
-    }
-  });
-}
-
-eventsFilter.addEventListener("input", filterEvents);
-
-// // SCROLL AND FETCH
-
-async function showInitialEvents() {
-  let res = await fetch("events.json");
-  await res.json();
-  let events = document.querySelectorAll(".event");
-  for (x = 0; x < maxEvents; x++) {
-    events.forEach(() => {
-      events.item(x).classList.remove("hide-event");
-    });
-  }
-}
-
-showInitialEvents();
-
-function showEvents() {
-  let events = document.querySelectorAll(".event");
-  for (x = 0; x < maxEvents; x++) {
-    events.forEach(() => {
-      events.item(x).classList.remove("hide-event");
-    });
-  }
-}
-
-function showLoading() {
-  eventsLoader.classList.add("show");
-
-  setTimeout(() => {
-    eventsLoader.classList.remove("show");
-
-    setTimeout(() => {
-      if (maxEvents < eventsList.childElementCount - 8) {
-        maxEvents += 8;
-      } else {
-        maxEvents = eventsList.childElementCount;
-      }
-      showEvents();
-    }, 100);
-  }, 1000);
-}
-
-eventsBox.addEventListener("scroll", () => {
-  let scrollTop = eventsBox.scrollTop;
-  let scrollHeight = eventsBox.scrollHeight;
-  let clientHeight = eventsBox.clientHeight;
-
-  if (scrollTop + clientHeight >= scrollHeight) {
-    if (maxEvents < eventsList.childElementCount) {
-      showLoading();
-    }
-  }
-});
-
-async function clickEventInfoButton() {
-  let res = await fetch("events.json");
-  await res.json();
-  let eventsInfoButtons = document.querySelectorAll(".open-info");
-  for (x = 0; x < eventsList.childElementCount; x++) {
-    eventsInfoButtons.forEach(() => {
-      eventsInfoButtons.item(x).addEventListener("click", showEventsInfo);
-      eventsInfoButtonsArr[x] = eventsInfoButtons.item(x);
-    });
-  }
-}
-clickEventInfoButton();
-
-async function getEventsInfo() {
-  let res = await fetch("events.json");
-  await res.json();
-  let eventsInfo = document.querySelectorAll(".event-info");
-  for (x = 0; x < eventsList.childElementCount; x++) {
-    eventsInfo.forEach(() => {
-      eventsInfoArr[x] = eventsInfo.item(x);
-    });
-  }
-}
-getEventsInfo();
-
-function showEventsInfo() {
-  let eventInfo = event.target.parentElement;
-  if (eventInfo.classList.contains("hide-info")) {
-    eventInfo.classList.remove("hide-info");
-  } else {
-    eventInfo.classList.add("hide-info");
-  }
-}
-
-//GAMES GENERAL
-let gamePlayed;
-let gamePlayed2;
-let gameover1 = document.getElementById("game-over1");
-let gameover2 = document.getElementById("game-over2");
-let gameover3 = document.getElementById("game-over3");
-let gameOverScreens = document.querySelectorAll(".game-over");
-let games = new Array(3);
-let gameButtons = new Array(games.length);
-let infoGames = new Array(games.length);
-let gameBoxes = new Array(games.length);
-let gameControls = new Array(games.length);
-let showGameControls = new Array(games.length);
-let gameOverArr = new Array(
-  document.getElementById("game-over1"),
-  document.getElementById("game-over2"),
-  document.getElementById("game-over3")
-);
-let gameAgainYes = new Array(games.length);
-let gameAgainNo = new Array(games.length);
-let startGameScreens = new Array(games.length);
-let startGameBtns = new Array(games.length);
-let bonusRoundArray = new Array(games.length);
-
-function bonusRound(x) {
-  bonusRoundArray[x].classList.remove("hide-screen");
-  setTimeout(() => {
-    hideBonusRoundScreen();
-  }, 2000);
-  setTimeout(() => {
-    startBonusRound();
-  }, 2000);
-  setTimeout(() => {
-    endBonusRound();
-  }, 20000);
-}
-
-function hideBonusRoundScreen() {
-  for (x = 0; x < bonusRoundArray.length; x++) {
-    bonusRoundArray[x].classList.add("hide-screen");
-  }
-}
-
-function startBonusRound() {
-  for (var i = 0; i < aliensArray.length; i++) {
-    aliensArray[i].bonus();
-    console.log(aliensArray);
-  }
-}
-
-function endBonusRound() {
-  for (var i = 0; i < aliensArray.length; i++) {
-    aliensArray[i].normal();
-    console.log(aliensArray);
-  }
-}
+//GAME STARTER FUNCTIONS
 
 function fillGameArrays() {
-  for (x = 0; x < games.length; x++) {
-    games[x] = document.getElementById(`theGame${x + 1}`);
-    gameButtons[x] = document.getElementById(`playGame${x + 1}`);
-    infoGames[x] = document.getElementById(`game${x + 1}info`);
-    gameBoxes[x] = document.getElementById(`game${x + 1}`);
-    gameControls[x] = document.getElementById(`controls${x + 1}`);
-    showGameControls[x] = document.getElementById(`show-controls${x + 1}`);
-    startGameScreens[x] = document.getElementById(`start-game${x + 1}`);
-    startGameBtns[x] = document.getElementById(`start-btn${x + 1}`);
-    bonusRoundArray[x] = document.getElementById(`bonus-round${x + 1}`);
-  }
+  fillTreesArray(gameCanvas, treesArray2);
+  fillCloudsArray(gameCanvas, cloudsArray2);
+  fillBirdsArray(gameCanvas, birdsArray2);
+  fillSmallRocksArray(gameCanvas, smallRocksArray);
+  createDinosaur(ctxGame);
 }
 fillGameArrays();
 
-function showStartGameScreen(x) {
-  startGameScreens[x].classList.remove("hide-screen");
+function drawGame() {
+  emptyCanvas(ctxGame, gameCanvas);
+  drawEarth(ctxGame, gameCanvas);
+  drawArrayOnCanvas(ctxGame, treesArray2);
+  drawArrayOnCanvas(ctxGame, cloudsArray2);
+  drawArrayOnCanvas(ctxGame, birdsArray2);
+  drawArrayOnCanvas(ctxGame, smallRocksArray);
+  drawDinosaur(ctxGame);
 }
 
-function hideStartGameScreen() {
-  for (x = 0; x < startGameScreens.length; x++) {
-    startGameScreens[x].classList.add("hide-screen");
+function gameAction() {
+  drawGame();
+  moveTreesArray(gameCanvas, treesArray2);
+  moveCloudsArray(gameCanvas, cloudsArray2);
+  moveBirdsArray(gameCanvas, birdsArray2);
+  moveSmallRocksArray(gameCanvas, smallRocksArray);
+  moveDinosaur(gameCanvas);
+  requestIdGame = requestAnimationFrame(gameAction);
+}
+gameAction();
+
+// DRAWING FUNCTIONS
+
+function emptyCanvas(canvasContext, canvasName) {
+  canvasContext.clearRect(0, 0, canvasName.width, canvasName.height);
+}
+
+function drawArrayOnCanvas(canvasContext, arrayType) {
+  for (i = 0; i < arrayType.length; i++) {
+    arrayType[i].draw(canvasContext);
   }
 }
-
-function addStartGameBtnEventListeners() {
-  for (x = 0; x < startGameBtns.length; x++) {
-    startGameBtns[x].addEventListener("click", clickStartGameBtn);
-  }
-}
-addStartGameBtnEventListeners();
-
-function clickStartGameBtn() {
-  let startGameScreen = event.target.parentElement;
-  let gameStartGameScreen = startGameScreen.parentElement.id;
-
-  startGameScreen.classList.add("hide-screen");
-  resetAllGames();
-
-  switch (gameStartGameScreen) {
-    case "game1":
-      game1Action();
-      break;
-    case "game2":
-      game2Action();
-      break;
-    case "game3":
-      game3Action();
-      break;
-  }
-}
-
-function addControlsBtnEventListeners() {
-  for (x = 0; x < showGameControls.length; x++) {
-    showGameControls[x].addEventListener("mouseenter", showTheGameControls);
-    gameControls[x].addEventListener("mouseleave", showTheGameControls);
-  }
-}
-addControlsBtnEventListeners();
-
-function hideControlsBtn() {
-  for (x = 0; x < gameControls.length; x++) {
-    showGameControls[x].classList.add("hide-btn");
-    gameControls[x].classList.add("hide-controls");
-  }
-}
-
-function showControlsBtn(x) {
-  showGameControls[x].classList.remove("hide-btn");
-}
-
-function showTheGameControls() {
-  let x;
-  switch (gamePlayed) {
-    case "game1":
-      x = 0;
-      break;
-    case "game2":
-      x = 1;
-      break;
-    case "game3":
-      x = 2;
-      break;
-  }
-  gameControls[x].classList.contains("hide-controls")
-    ? gameControls[x].classList.remove("hide-controls")
-    : gameControls[x].classList.add("hide-controls");
-}
-
-function gameOverClose() {
-  for (x = 0; x < gameOverArr.length; x++) {
-    gameOverArr[x].classList.add("hide-screen");
-  }
-}
-
-function gameOverAgain() {
-  let gameOverScreen = event.target.parentElement;
-  let gameOverGame = gameOverScreen.parentElement.id;
-
-  gameOverScreen.classList.add("hide-screen");
-  resetAllGames();
-
-  switch (gameOverGame) {
-    case "game1":
-      game1Action();
-      break;
-    case "game2":
-      game2Action();
-      break;
-    case "game3":
-      game3Action();
-      break;
-  }
-}
-
-function getGameAgainButtons() {
-  let againYes = document.querySelectorAll(".play-yes");
-  let againNo = document.querySelectorAll(".play-no");
-  for (x = 0; x < gameAgainYes.length; x++) {
-    againYes.forEach(() => {
-      gameAgainYes[x] = againYes.item(x);
-      againYes.item(x).addEventListener("click", gameOverAgain);
-    });
-  }
-  for (x = 0; x < gameAgainNo.length; x++) {
-    againNo.forEach(() => {
-      gameAgainNo[x] = againNo.item(x);
-      againNo.item(x).addEventListener("click", closeGames);
-      againNo.item(x).addEventListener("click", gameLightOff);
-      againNo.item(x).addEventListener("click", gameOverClose);
-      againNo.item(x).addEventListener("click", closePlayedGame);
-    });
-  }
-}
-getGameAgainButtons();
-
-function closeGames() {
-  for (x = 0; x < games.length; x++) {
-    games[x].classList.add("hide-game");
-  }
-  hideStartGameScreen();
-  hideBonusRoundScreen();
-  gameOverClose();
-  startBtn();
-  hideControlsBtn();
-  resetAllGames();
-  enableScrolling();
-}
-
-function resetAllGames() {
-  resetGame1();
-  resetGame2();
-  resetGame3();
-}
-
-function startGame() {
-  closeGames();
-  gamePlayed = event.target.parentElement.id;
-  const pick =
-    "the" + (gamePlayed.charAt(0).toUpperCase() + gamePlayed.slice(1));
-  const game = document.getElementById(pick);
-  game.classList.remove("hide-game");
-  gameLightOff();
-  disableScrollingInGame();
-
-  switch (gamePlayed) {
-    case "game1":
-      game1Action();
-      showControlsBtn(0);
-      showStartGameScreen(0);
-      break;
-    case "game2":
-      game2Action();
-      showControlsBtn(1);
-      showStartGameScreen(1);
-      break;
-    case "game3":
-      game3Action();
-      showControlsBtn(2);
-      showStartGameScreen(2);
-      break;
-  }
-}
-
-function getOffset(element) {
-  const position = element.getBoundingClientRect();
-  return {
-    left: position.left + window.scrollX,
-    top: position.top + window.scrollY,
-  };
-}
-
-const topGame1 = getOffset(game1).top;
-const topGame2 = getOffset(game2).top;
-const topGame3 = getOffset(game3).top;
-
-function disableScrollingInGame() {
-  let x = window.scrollX;
-  let y;
-  let margin;
-  gamePlayed = event.target.parentElement.id;
-
-  if (window.innerHeight < 700) {
-    margin = 0.98;
-  } else {
-    margin = 0.84;
-  }
-
-  switch (gamePlayed) {
-    case "game1":
-      y = topGame1 * margin;
-      break;
-    case "game2":
-      y = topGame2 * margin;
-      break;
-    case "game3":
-      y = topGame3 * margin;
-      break;
-  }
-
-  window.scrollTo(x, y);
-  window.onscroll = function () {
-    window.scrollTo(x, y);
-  };
-}
-
-function enableScrolling() {
-  window.onscroll = function () {};
-}
-
-function closePlayedGame() {
-  if (gamePlayed == gamePlayed2) {
-    closeGames();
-    gamePlayed2 = undefined;
-  } else {
-    gamePlayed2 = event.target.parentElement.id;
-  }
-}
-
-function startBtn() {
-  for (x = 0; x < gameButtons.length; x++) {
-    gameButtons[x].innerText = "Play game";
-    gameButtons[x].classList.remove("inGame");
-  }
-}
-
-function endBtn() {
-  const button = document.getElementById(`${event.target.id}`);
-  if (button.innerText == "Play game") {
-    button.innerText = "End game";
-    button.classList.add("inGame");
-  }
-}
-
-function gameLightOff() {
-  for (x = 0; x < games.length; x++) {
-    if (games[x].classList.contains("hide-game")) {
-      infoGames[x].classList.remove("highlightGame");
-      gameBoxes[x].classList.remove("highlightGame");
-    }
-  }
-}
-
-function highLightGame() {
-  let pick = event.target.parentElement.id;
-  const gameBox = document.getElementById(pick);
-  const gameInfo = document.getElementById(`${pick + "info"}`);
-  const game = document.getElementById(
-    `${"the" + (pick.charAt(0).toUpperCase() + pick.slice(1))}`
-  );
-
-  if (game.classList.contains("hide-game")) {
-    gameInfo.classList.contains("highlightGame")
-      ? (gameInfo.classList.remove("highlightGame"),
-        gameBox.classList.remove("highlightGame"))
-      : (gameInfo.classList.add("highlightGame"),
-        gameBox.classList.add("highlightGame"));
-  }
-}
-
-function gamesEventListeners() {
-  for (x = 0; x < gameButtons.length; x++) {
-    gameButtons[x].addEventListener("click", startGame);
-    gameButtons[x].addEventListener("click", endBtn);
-    gameButtons[x].addEventListener("click", closePlayedGame);
-    gameButtons[x].addEventListener("mouseenter", highLightGame);
-    gameButtons[x].addEventListener("mouseleave", highLightGame);
-  }
-}
-gamesEventListeners();
-
-//Drawing functions
 
 function drawRoundObject(
-  gameCanvas,
+  canvasContext,
   objectColour,
   objectX,
   objectY,
@@ -1232,8 +612,8 @@ function drawRoundObject(
   endAngle,
   counterClockwise
 ) {
-  gameCanvas.beginPath();
-  gameCanvas.arc(
+  canvasContext.beginPath();
+  canvasContext.arc(
     objectX,
     objectY,
     radius,
@@ -1241,13 +621,13 @@ function drawRoundObject(
     endAngle,
     counterClockwise
   );
-  gameCanvas.fillStyle = objectColour;
-  gameCanvas.fill();
-  gameCanvas.closePath();
+  canvasContext.fillStyle = objectColour;
+  canvasContext.fill();
+  canvasContext.closePath();
 }
 
 function drawEllipseObject(
-  gameCanvas,
+  canvasContext,
   objectColour,
   objectX,
   objectY,
@@ -1258,8 +638,8 @@ function drawEllipseObject(
   endAngle,
   counterClockwise
 ) {
-  gameCanvas.beginPath();
-  gameCanvas.ellipse(
+  canvasContext.beginPath();
+  canvasContext.ellipse(
     objectX,
     objectY,
     radiusX,
@@ -1269,130 +649,190 @@ function drawEllipseObject(
     endAngle,
     counterClockwise
   );
-  gameCanvas.fillStyle = objectColour;
-  gameCanvas.fill();
-  gameCanvas.closePath();
+  canvasContext.fillStyle = objectColour;
+  canvasContext.fill();
+  canvasContext.closePath();
 }
 
 function drawRectObject(
-  gameCanvas,
+  canvasContext,
   objectColour,
   objectX,
   objectY,
   objectW,
   objectH
 ) {
-  gameCanvas.beginPath();
-  gameCanvas.rect(objectX, objectY, objectW, objectH);
-  gameCanvas.fillStyle = objectColour;
-  gameCanvas.fill();
-  gameCanvas.closePath();
+  canvasContext.beginPath();
+  canvasContext.rect(objectX, objectY, objectW, objectH);
+  canvasContext.fillStyle = objectColour;
+  canvasContext.fill();
+  canvasContext.closePath();
 }
 
-function drawEarth(canvasName, gameCanvas) {
-  const earth = {
-    x: 0,
-    y: canvasName.height - 5,
-    w: canvasName.width,
-    h: 5,
-  };
-  drawRectObject(gameCanvas, "#003b00", earth.x, earth.y, earth.w, earth.h);
+// BACKGROUND ITEMS
+
+function fillCloudsArray(canvasName, cloudsArray) {
+  for (var i = 0; i < maxClouds; i++) {
+    cloudsArray[i] = new Cloud(canvasName);
+  }
 }
 
-function drawScore(gameCanvas, canvasName, gameScore) {
-  gameCanvas.fillStyle = "#FF0000";
-  gameCanvas.fillText(`Score: ${gameScore}`, canvasName.width - 55, 10);
+function moveCloudsArray(canvasName, cloudsArray) {
+  for (var i = 0; i < cloudsArray.length; i++) {
+    cloudsArray[i].x += cloudsArray[i].dx * cloudsArray[i].speed;
+    if (cloudsArray[i].x < -20) {
+      cloudsArray[i].reset(canvasName);
+    }
+  }
 }
 
-function emptyCanvas(gameCanvas, canvasName) {
-  gameCanvas.clearRect(0, 0, canvasName.width, canvasName.height);
+function fillBirdsArray(canvasName, birdsArray) {
+  for (var i = 0; i < maxBirds; i++) {
+    birdsArray[i] = new Bird(canvasName);
+  }
 }
 
-//GAME CONTROLS
-let objectSpeedUp = 1;
-let controlledBackground;
+function moveBirdsArray(canvasName, birdsArray) {
+  for (var i = 0; i < birdsArray.length; i++) {
+    birdsArray[i].x += birdsArray[i].dx;
+    birdsArray[i].y += birdsArray[i].dy;
+    if (birdsArray[i].x < -20) {
+      birdsArray[i].reset(canvasName);
+    }
+  }
+}
 
-function setControlledObject() {
-  switch (gamePlayed) {
-    case "game1":
-      controlledObject = lukesArray1[0];
-      controlledBackground = backgroundStarsArray1;
-      break;
-    case "game2":
-      controlledObject = lukesArray2[0];
-      controlledBackground = backgroundStarsArray2;
-      break;
-    case "game3":
-      controlledObject = lukesArray3[0];
-      controlledBackground = backgroundStarsArray3;
-      break;
+function fillDinosaursArray(canvasContext, dinosaursArray) {
+  for (var i = 0; i < maxDinosaurs; i++) {
+    dinosaursArray[i] = new Dinosaur(canvasContext);
+  }
+}
+
+function moveDinosaursArray(canvasName, dinosaursArray) {
+  for (var i = 0; i < dinosaursArray.length; i++) {
+    dinosaursArray[i].x += dinosaursArray[i].dx;
+    if (dinosaursArray[i].x > canvasName.width + 20) {
+      dinosaursArray[i].reset(canvasName);
+    }
+  }
+}
+
+function fillTreesArray(canvasContext, treesArray) {
+  for (var i = 0; i < maxTrees; i++) {
+    treesArray[i] = new Tree(canvasContext);
+  }
+}
+
+function moveTreesArray(canvasName, treesArray) {
+  for (var i = 0; i < treesArray.length; i++) {
+    treesArray[i].x += treesArray[i].dx * treesArray[i].speed;
+    if (treesArray[i].x < -20) {
+      treesArray[i].reset(canvasName);
+    }
+  }
+}
+
+function drawEarth(canvasContext, canvasName) {
+  drawRectObject(
+    canvasContext,
+    "#2d822f",
+    0,
+    canvasName.height - 50,
+    canvasName.width,
+    45
+  );
+  drawRectObject(
+    canvasContext,
+    "#b16100",
+    0,
+    canvasName.height - 4,
+    canvasName.width,
+    4
+  );
+  drawRectObject(
+    canvasContext,
+    "#005e02",
+    0,
+    canvasName.height - 5,
+    canvasName.width,
+    1
+  );
+}
+
+// IN GAME ITEMS
+
+function fillSmallRocksArray(canvasContext, smallRocksArray) {
+  for (var i = 0; i < maxSmallRocks; i++) {
+    smallRocksArray[i] = new SmallRock(canvasContext);
+  }
+}
+
+function moveSmallRocksArray(canvasName, smallRocksArray) {
+  for (var i = 0; i < smallRocksArray.length; i++) {
+    smallRocksArray[i].x += smallRocksArray[i].dx * smallRocksArray[i].speed;
+    if (smallRocksArray[i].x < -20) {
+      smallRocksArray[i].reset(canvasName);
+    }
+  }
+}
+
+// DINOSAUR PLAYER
+
+function createDinosaur(canvasContext) {
+  dino = new Dinosaur(canvasContext);
+}
+
+function drawDinosaur(canvasContext) {
+  dino.draw(canvasContext);
+}
+
+function moveDinosaur(canvasName) {
+  dino.x += dino.dx;
+  dino.y -= dinoJump;
+  dinoTurn += dinoJump;
+  if (dino.x > canvasName.width - 20) {
+    dino.x = canvasName.width - 20;
+  } else if (dino.x < 40) {
+    dino.x = 40;
+  } else if (dinoTurn == 0) {
+    dinoJump = 0;
+  } else if (dinoTurn == 10) {
+    dinoJump = -1;
   }
 }
 
 function keyDown(e) {
-  setControlledObject();
-
   if (e.key === "Right" || e.key === "ArrowRight") {
-    controlledObject.dx = controlledObject.speed;
-    if (gamePlayed == "game1") {
-      objectSpeedUp = 1.2;
-    }
-    if (gamePlayed == "game1" || gamePlayed == "game3") {
-      for (i = 0; i < controlledBackground.length; i++) {
-        controlledBackground[i].right();
-      }
-    }
+    dino.dx = dino.speed;
   } else if (e.key === "Left" || e.key === "ArrowLeft") {
-    controlledObject.dx = -controlledObject.speed;
-    if (gamePlayed == "game1") {
-      objectSpeedUp = 0.5;
-    }
-    if (gamePlayed == "game1" || gamePlayed == "game3") {
-      for (i = 0; i < controlledBackground.length; i++) {
-        controlledBackground[i].left();
-      }
-    }
+    dino.dx = -dino.speed;
   }
 
   if (e.key === "Up" || e.key === "ArrowUp") {
-    controlledObject.dy = -2;
-    if (gamePlayed == "game2") {
-      objectSpeedUp = 1.4;
-      for (i = 0; i < controlledBackground.length; i++) {
-        controlledBackground[i].up();
-      }
+    if (necklength < 80) {
+      necklength = necklength + 3;
     }
   }
   if (e.key === "Down" || e.key === "ArrowDown") {
-    controlledObject.dy = 2;
-    if (gamePlayed == "game2") {
-      objectSpeedUp = 0.5;
-      for (i = 0; i < controlledBackground.length; i++) {
-        controlledBackground[i].down();
-      }
+    if (necklength > 0) {
+      necklength = necklength - 3;
     }
   }
-  if (e.key === "f" && gamePlayed == "game2") {
-    shootBulletsArray(lukesArray2[0]);
+  if (e.code === "Space" || e.code === "32") {
+    if (dinoJump == 0) {
+      dinoJump = 1;
+    }
   }
 }
 
 function keyUp(e) {
-  setControlledObject();
-
   if (
     e.key === "Right" ||
     e.key === "ArrowRight" ||
     e.key === "Left" ||
     e.key === "ArrowLeft"
   ) {
-    controlledObject.dx = 0;
-    objectSpeedUp = 1;
-    if (gamePlayed == "game1" || gamePlayed == "game3") {
-      for (i = 0; i < controlledBackground.length; i++) {
-        controlledBackground[i].steady();
-      }
-    }
+    dino.dx = 0;
   }
   if (
     e.key === "Up" ||
@@ -1400,1814 +840,9 @@ function keyUp(e) {
     e.key === "Down" ||
     e.key === "ArrowDown"
   ) {
-    controlledObject.dy = 0;
-    objectSpeedUp = 1;
-    if (gamePlayed == "game2") {
-      for (i = 0; i < controlledBackground.length; i++) {
-        controlledBackground[i].steady();
-      }
-    }
+    necklength = necklength;
   }
 }
 
 document.addEventListener("keydown", keyDown);
 document.addEventListener("keyup", keyUp);
-
-//GAME FUNCTIONS
-
-function scorePoints(gameNr, gameScore) {
-  let waitForStart = gamePlayed.slice(4) - 1;
-  if (
-    startGameScreens[waitForStart].classList.contains("hide-screen") &&
-    gameOverScreens[waitForStart].classList.contains("hide-screen") &&
-    bonusRoundArray[waitForStart].classList.contains("hide-screen")
-  ) {
-    switch (gameNr) {
-      case 1:
-        score1++;
-        speedUp(gameScore);
-        break;
-      case 2:
-        score2++;
-        speedUp(gameScore);
-        break;
-      case 3:
-        score3++;
-        speedUp(gameScore);
-        break;
-    }
-  }
-}
-
-function speedUp(gameScore) {
-  var testScore = /^[1-9]{0,1}[5]{1,2}$/;
-  //let bonusRoundGame = gamePlayed.slice(4) - 1;
-  let x;
-  if (gameScore == 3 || gameScore == 26 || gameScore == 60) {
-    x = "extra";
-  } else if (gameScore == 50) {
-    x = "bonus";
-  } else if (testScore.test(gameScore)) {
-    x = "speed";
-  } else {
-    x = "none";
-  }
-
-  // if (x == "bonus") {
-  //   bonusRound(bonusRoundGame);
-  // }
-
-  if (gamePlayed == "game1") {
-    if ((x == "extra") & (SI < starsArray.length - 1)) {
-      SI++;
-    }
-    starsArray[SI].fall();
-  }
-  if (gamePlayed == "game2") {
-    if ((x == "speed") & (heartNr != undefined)) {
-      heartsArray[heartNr].fall();
-    }
-  }
-  if (gamePlayed == "game3") {
-    if (x == "extra") {
-      positionXcowboy = cowboysArray[CI].x;
-      directionC = (cowboysArray[CI].dx / 2.5) * -1;
-      CI++;
-      cowboysArray[CI].update();
-      cowboyX = cowboysArray[CI].x;
-      cowboyY = cowboysArray[CI].y;
-      enemyBulletsArray[CI].reset();
-    }
-  }
-}
-
-function gameOver(lukesArray, enemyObject) {
-  let waitForStart = gamePlayed.slice(4) - 1;
-  if (startGameScreens[waitForStart].classList.contains("hide-screen")) {
-    if (gamePlayed == "game1" || gamePlayed == "game3") {
-      for (var i = 0; i < enemyObject.length; i++) {
-        if (
-          enemyObject[i].x > lukesArray[0].x - 20 &&
-          enemyObject[i].x < lukesArray[0].x + 20 &&
-          enemyObject[i].y > lukesArray[0].y - 6 &&
-          enemyObject[i].y < lukesArray[0].y + 10
-        ) {
-          pauseGame(gamePlayed);
-          if (gamePlayed == "game1") {
-            gameover1.classList.remove("hide-screen");
-          }
-          if (gamePlayed == "game3") {
-            gameover3.classList.remove("hide-screen");
-            CI = 0;
-          }
-        }
-      }
-    }
-
-    if (gamePlayed == "game2") {
-      pauseGame(gamePlayed);
-      heartNr = undefined;
-      gameover2.classList.remove("hide-screen");
-    }
-  }
-}
-
-function resetScore(gameNr) {
-  switch (gameNr) {
-    case 1:
-      score1 = 0;
-      break;
-    case 2:
-      score2 = 0;
-      break;
-    case 3:
-      score3 = 0;
-      break;
-  }
-}
-
-function resetGame(gameNr) {
-  switch (gameNr) {
-    case 1:
-      resetGame1();
-      break;
-    case 2:
-      resetGame2();
-      break;
-    case 3:
-      resetGame3();
-      break;
-  }
-}
-
-function pauseGame(gamePlayed) {
-  if (gamePlayed == "game1") {
-    for (var i = 0; i < lukesArray1.length; i++) {
-      lukesArray1[i].dy = 0;
-      lukesArray1[i].dx = 0;
-      lukesArray1[i].speed = 0;
-    }
-  }
-  if (gamePlayed == "game2") {
-    for (var i = 0; i < lukesArray2.length; i++) {
-      lukesArray2[i].dy = 0;
-      lukesArray2[i].dx = 0;
-      lukesArray2[i].speed = 0;
-    }
-  }
-  if (gamePlayed == "game3") {
-    for (var i = 0; i < lukesArray3.length; i++) {
-      lukesArray3[i].dy = 0;
-      lukesArray3[i].dx = 0;
-      lukesArray3[i].speed = 0;
-    }
-    fuelBar.pause();
-  }
-}
-
-//GAME 1 CONSTANTS
-const canvas1 = document.getElementById("theGame1");
-const ctx1 = canvas1.getContext("2d");
-let score1 = 0;
-let requestIdGame1;
-let aliensArray1 = [];
-let cometsArray = [];
-let starsArray = [];
-let fuelStarsArray = [];
-let lukesArray1 = [];
-let rocksArray = [];
-let backgroundStarsArray1 = [];
-let SI = 0;
-let FSI = 0;
-let alienSpeed = 1;
-
-//GAME 2 CONSTANTS
-const canvas2 = document.getElementById("theGame2");
-const ctx2 = canvas2.getContext("2d");
-let score2 = 0;
-let requestIdGame2;
-let debris = [];
-let bulletsArray = [];
-let aliensArray2 = [];
-let heartsArray = [];
-let lukesArray2 = [];
-let backgroundStarsArray2 = [];
-let heartNr;
-let BI = 0;
-let AI = 0;
-let direction = 1;
-let marginXheart;
-
-//GAME 3 CONSTANTS
-const canvas3 = document.getElementById("theGame3");
-const ctx3 = canvas3.getContext("2d");
-let score3 = 0;
-let requestIdGame3;
-let cowboysArray = [];
-let enemyBulletsArray = [];
-let lukesArray3 = [];
-let backgroundStarsArray3 = [];
-let positionXcowboy;
-let directionC;
-let cowboyX;
-let cowboyY;
-let EBI = 0;
-let CI = 0;
-
-//GAME CLASSES
-
-class BackgroundStars {
-  constructor(canvasName, backgroundDX, backgroundDY) {
-    this.x = Math.random() * (canvasName.width - 1) + 1;
-    this.y = Math.random() * (canvasName.height - 1) + 1;
-    this.dx = backgroundDX;
-    this.dy = backgroundDY;
-
-    this.draw = function (gameCanvas) {
-      gameCanvas.beginPath();
-      gameCanvas.arc(this.x, this.y, 1, 0, 2 * Math.PI, false);
-      gameCanvas.fillStyle = "#3b2c00";
-      gameCanvas.fill();
-      gameCanvas.closePath();
-    };
-
-    this.left = function () {
-      this.dx = backgroundDX + 0.5;
-    };
-
-    this.right = function () {
-      this.dx = backgroundDX - 1;
-    };
-
-    this.up = function () {
-      this.dy = backgroundDY + 1;
-    };
-
-    this.down = function () {
-      this.dy = backgroundDY - 0.5;
-    };
-
-    this.returnX = function (canvasName) {
-      if (this.x > canvasName.width) {
-        this.x = 1;
-      } else if (this.x < 0) {
-        this.x = canvasName.width - 1;
-      }
-      this.y = Math.random() * (canvasName.height - 1) + 1;
-    };
-
-    this.returnY = function (canvasName) {
-      if (this.y > canvasName.height) {
-        this.y = 1;
-      } else if (this.y < 0) {
-        this.y = canvasName.height - 1;
-      }
-      this.x = Math.random() * (canvasName.width - 1) + 1;
-    };
-
-    this.steady = function () {
-      this.dx = backgroundDX;
-      this.dy = backgroundDY;
-    };
-  }
-}
-
-class Luke {
-  constructor(canvasName, marginXluke, marginYluke) {
-    this.x = canvasName.width / marginXluke;
-    this.y = canvasName.height / 2 + marginYluke;
-    this.speed = 2;
-    this.dx = 0;
-    this.dy = 0;
-    this.w = 60;
-    this.h = 4;
-    this.size = 4.5;
-
-    this.draw = function drawLuke(gameCanvas) {
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x,
-        this.y,
-        this.size,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#000000",
-        this.x - 2,
-        this.y - 1,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#000000",
-        this.x + 2,
-        this.y - 1,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawEllipseObject(
-        gameCanvas,
-        "#808080",
-        this.x,
-        this.y + 5,
-        20,
-        2,
-        0,
-        0,
-        Math.PI * 2,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x - 4,
-        this.y + 5.2,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x + 4,
-        this.y + 5.2,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x - 11,
-        this.y + 5.2,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x + 11,
-        this.y + 5.2,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x - 18,
-        this.y + 5.2,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x + 18,
-        this.y + 5.2,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-    };
-
-    this.reset = function (canvasName, marginXluke, marginYluke) {
-      this.x = canvasName.width / marginXluke;
-      this.y = canvasName.height / 2 - marginYluke;
-      this.speed = 2;
-      this.dx = 0;
-      this.dy = 0;
-    };
-  }
-}
-
-class Bullet {
-  constructor() {
-    this.x = 310;
-    this.y = -5;
-    this.dx = 0;
-    this.dy = 0;
-    this.speed = 1;
-    this.size = 2;
-
-    this.draw = function (gameCanvas) {
-      gameCanvas.beginPath();
-      gameCanvas.arc(this.x, this.y, 2, 0, 2 * Math.PI, false);
-      gameCanvas.fillStyle = "#05db05";
-      gameCanvas.fill();
-      gameCanvas.closePath();
-    };
-
-    this.update = function (actionSubject) {
-      this.x = actionSubject.x;
-      this.y = actionSubject.y - 1;
-    };
-    this.shoot = function () {
-      this.dy = -2;
-    };
-    this.reset = function () {
-      this.x = 310;
-      this.y = -5;
-      this.dx = 0;
-      this.dy = 0;
-    };
-  }
-}
-
-class Star {
-  constructor(canvasName, color) {
-    this.x = canvasName.width + (Math.random() * 450 + 10);
-    this.y = canvasName.height * (Math.random() * 0.8 + 0.1);
-    this.dx = 0;
-    this.dy = 0;
-    this.r = 6;
-    this.n = 5;
-    this.inset = -1;
-    this.size = 3;
-    this.speed = 1;
-    this.color = color;
-
-    this.draw = function (gameCanvas) {
-      gameCanvas.save();
-      gameCanvas.beginPath();
-      gameCanvas.translate(this.x, this.y);
-      gameCanvas.moveTo(0, 0 - this.r);
-      for (let x = 0; x < this.n; x++) {
-        gameCanvas.rotate(Math.PI / this.n);
-        gameCanvas.lineTo(0, 0 - this.r * this.inset);
-        gameCanvas.rotate(Math.PI / this.n);
-        gameCanvas.lineTo(0, 0 - this.r);
-      }
-      gameCanvas.fillStyle = this.color;
-      gameCanvas.fill();
-      gameCanvas.closePath();
-      gameCanvas.restore();
-    };
-
-    this.fall = function () {
-      this.dx = -2;
-    };
-
-    this.return = function (canvasName) {
-      this.x = canvasName.width + (Math.random() * 450 + 10);
-      this.y = canvasName.height * (Math.random() * 0.8 + 0.1);
-    };
-
-    this.reset = function (canvasName) {
-      this.x = canvasName.width + (Math.random() * 450 + 10);
-      this.y = canvasName.height * (Math.random() * 0.8 + 0.1);
-      this.dx = 0;
-      this.dy = 0;
-    };
-  }
-}
-
-class Heart {
-  constructor(canvasName) {
-    this.x = canvasName.width - 30;
-    this.y = 10;
-    this.d = Math.min(9, 9);
-    this.k = 8;
-    this.dx = 0;
-    this.dy = 0;
-
-    this.draw = function (gameCanvas) {
-      gameCanvas.save();
-      gameCanvas.beginPath();
-      gameCanvas.translate(this.x, this.y);
-      gameCanvas.moveTo(7, 6);
-      gameCanvas.bezierCurveTo(7, 3, 7, 2, 5, 2);
-      gameCanvas.bezierCurveTo(2, 2, 2, 6, 2, 6);
-      gameCanvas.bezierCurveTo(2, 8, 4, 10, 7, 12);
-      gameCanvas.bezierCurveTo(11, 10, 13, 8, 13, 6);
-      gameCanvas.bezierCurveTo(13, 6, 13, 2, 10, 2);
-      gameCanvas.bezierCurveTo(8, 2, 7, 3, 7, 4);
-      gameCanvas.fillStyle = "#FF0000";
-      gameCanvas.fill();
-      gameCanvas.closePath();
-      gameCanvas.restore();
-    };
-
-    this.lose = function (canvasName) {
-      this.x = canvasName.width * (Math.random() * 0.7 + 0.2);
-      this.y = -20;
-    };
-    this.fall = function () {
-      this.dy = 2;
-    };
-    this.reset = function (canvasName) {
-      this.x = canvasName.width - marginXheart;
-      this.y = 10;
-      this.dx = 0;
-      this.dy = 0;
-    };
-  }
-}
-
-class FuelBar {
-  constructor() {
-    this.w = 45;
-    this.fu = 0.05;
-
-    this.draw = function (gameCanvas, canvasName) {
-      gameCanvas.beginPath();
-      gameCanvas.rect(canvasName.width - 55, 12, this.w, 4);
-      gameCanvas.fillStyle = "#05db05";
-      gameCanvas.fill();
-      gameCanvas.closePath();
-    };
-
-    this.use = function () {
-      if (this.w > 0) {
-        this.w -= this.fu;
-      } else {
-        this.w = 0;
-      }
-    };
-
-    this.refill = function (lukesArray) {
-      if (this.w <= 20) {
-        this.w += 25;
-      } else {
-        this.w += 25 - (this.w - 20);
-      }
-      lukesArray[0].speed = 2;
-    };
-
-    this.reset = function () {
-      this.w = 45;
-      this.fu = 0.05;
-    };
-
-    this.pause = function () {
-      this.fu = 0;
-    };
-  }
-}
-
-class AlienVertical {
-  constructor(canvasName) {
-    this.x = canvasName.width * (Math.random() * 0.7 + 0.2);
-    this.y = -(Math.random() * 200 + 10);
-    this.w = 60;
-    this.h = 4;
-    this.size = 3;
-    this.dx = (Math.random() * 2 + 1) * direction;
-    this.dy = Math.random() * 0.9 + 1.0;
-    this.speed = 1;
-
-    this.draw = function (gameCanvas) {
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x,
-        this.y,
-        this.size,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#FF0000",
-        this.x - 1.5,
-        this.y,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#FF0000",
-        this.x + 1.5,
-        this.y,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawEllipseObject(
-        gameCanvas,
-        "#FF0000",
-        this.x,
-        this.y + 4,
-        10,
-        2,
-        0,
-        0,
-        Math.PI * 2,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x - 3,
-        this.y + 4.2,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x + 3,
-        this.y + 4.2,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x - 7,
-        this.y + 4.2,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x + 7,
-        this.y + 4.2,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x - 11,
-        this.y + 4.2,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x + 11,
-        this.y + 4.2,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-    };
-
-    this.reset = function (canvasName) {
-      this.x = canvasName.width * (Math.random() * 0.7 + 0.2);
-      this.y = -(Math.random() * 200 + 10);
-      this.dx = (Math.random() * 2 + 1) * direction;
-      this.dy = Math.random() * 0.9 + 1.0;
-    };
-
-    this.bonus = function () {
-      this.speed = 10;
-    };
-
-    this.normal = function () {
-      this.speed = 1;
-    };
-  }
-}
-
-class AlienHorizontal {
-  constructor(canvasName) {
-    this.x = canvasName.width + (Math.random() * 460 + 20);
-    this.y = canvasName.height * (Math.random() * 0.8 + 0.1);
-    this.w = 60;
-    this.h = 4;
-    this.size = 3;
-    this.speed = Math.random() * 0.8 + 0.8;
-    this.dx = -2.5;
-    this.dy = 0;
-
-    this.draw = function (gameCanvas) {
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x,
-        this.y,
-        this.size,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#FF0000",
-        this.x - 1.5,
-        this.y,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#FF0000",
-        this.x + 1.5,
-        this.y,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawEllipseObject(
-        gameCanvas,
-        "#FF0000",
-        this.x,
-        this.y + 4,
-        10,
-        2,
-        0,
-        0,
-        Math.PI * 2,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x - 3,
-        this.y + 4.2,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x + 3,
-        this.y + 4.2,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x - 7,
-        this.y + 4.2,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x + 7,
-        this.y + 4.2,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x - 11,
-        this.y + 4.2,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#05db05",
-        this.x + 11,
-        this.y + 4.2,
-        1,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-    };
-
-    this.reset = function (canvasName) {
-      this.x = canvasName.width + (Math.random() * 460 + 20);
-      this.y = canvasName.height * (Math.random() * 0.8 + 0.1);
-      this.dx = -2.5;
-      this.dy = 0;
-      this.speed = Math.random() * 0.8 + 0.8;
-    };
-  }
-}
-
-// class HillBilly {
-//   constructor(canvasName) {
-//     this.draw = function (gameCanvas) {
-//       drawRoundObject(
-//         gameCanvas,
-//         "#DAA520",
-//         this.x,
-//         this.y - 20,
-//         5,
-//         -100,
-//         Math.PI - 0.5,
-//         true
-//       );
-//       drawRoundObject(
-//         gameCanvas,
-//         "#DEB887",
-//         this.x,
-//         this.y - 14,
-//         6,
-//         -100,
-//         Math.PI - 0.5,
-//         true
-//       );
-//       drawEllipseObject(
-//         gameCanvas,
-//         "#DAA520",
-//         this.x,
-//         this.y - 20,
-//         15,
-//         1,
-//         0,
-//         0,
-//         Math.PI * 2,
-//         true
-//       );
-//       drawRectObject(gameCanvas, "#FF0000", this.x - 38, this.y - 12, 50, 5);
-//       drawRectObject(gameCanvas, "#FF0000", this.x - 25, this.y - 17, 15, 10);
-//     };
-
-//     this.update = function () {
-//       this.x = positionXcowboy;
-//       this.dx = 2 * directionC;
-//     };
-
-//     this.reset = function (canvasName) {
-//       this.x = canvasName.width + 20;
-//       this.y = canvasName.height - 5;
-//       this.dx = 0;
-//     };
-//   }
-// }
-
-class Cowboy {
-  constructor(canvasName) {
-    this.draw = function (gameCanvas) {
-      drawRoundObject(
-        gameCanvas,
-        "#DAA520",
-        this.x,
-        this.y - 10,
-        5,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#DEB887",
-        this.x,
-        this.y - 4,
-        6,
-        -100,
-        Math.PI - 0.5,
-        true
-      );
-      drawEllipseObject(
-        gameCanvas,
-        "#DAA520",
-        this.x,
-        this.y - 10,
-        15,
-        1,
-        0,
-        0,
-        Math.PI * 2,
-        true
-      );
-    };
-
-    this.update = function () {
-      this.x = positionXcowboy;
-      this.dx = 2 * directionC;
-    };
-
-    this.reset = function (canvasName) {
-      this.x = canvasName.width + 20;
-      this.y = canvasName.height - 5;
-      this.dx = 0;
-    };
-  }
-}
-
-class EnemyBullet {
-  constructor() {
-    this.x = cowboyX;
-    this.y = cowboyY - 10;
-    this.speed = 2;
-    this.dx = 0.5;
-    this.dy = -2;
-
-    this.draw = function (gameCanvas) {
-      gameCanvas.beginPath();
-      gameCanvas.arc(this.x, this.y, 2, 0, 2 * Math.PI, false);
-      gameCanvas.fillStyle = "#808080";
-      gameCanvas.fill();
-      gameCanvas.closePath();
-    };
-
-    this.return = function () {
-      this.x = cowboyX;
-      this.y = cowboyY;
-    };
-
-    this.reset = function () {
-      this.x = cowboyX;
-      this.y = cowboyY - 10;
-      this.speed = 2;
-      this.dx = 0.5;
-      this.dy = -2;
-    };
-  }
-}
-
-class Comet {
-  constructor(canvasName) {
-    this.x = canvasName.width + (Math.random() * 460 + 20);
-    this.y = canvasName.height * (Math.random() * 0.8 + 0.1);
-    this.dx = -2.5;
-    this.dy = 0;
-    this.speed = 1.2;
-    this.size = Math.random() * 2.8 + 7.1;
-
-    this.draw = function (gameCanvas) {
-      drawRoundObject(
-        gameCanvas,
-        "#D2691E",
-        this.x,
-        this.y,
-        this.size,
-        0,
-        Math.PI * 2
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#8B4513",
-        this.x - 4,
-        this.y - 4,
-        this.size * 0.2,
-        0,
-        Math.PI * 2
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#8B4513",
-        this.x + 3,
-        this.y + 3,
-        this.size * 0.3,
-        0,
-        Math.PI * 2
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#8B4513",
-        this.x - 2,
-        this.y - 2,
-        this.size * 0.2,
-        0,
-        Math.PI * 2
-      );
-    };
-
-    this.reset = function (canvasName) {
-      this.x = canvasName.width + (Math.random() * 460 + 20);
-      this.y = canvasName.height * (Math.random() * 0.8 + 0.1);
-      this.dx = -2.5;
-      this.dy = 0;
-      this.speed = 1.2;
-    };
-  }
-}
-
-class Rock {
-  constructor(canvasName) {
-    this.x = canvasName.width + (Math.random() * 460 + 20);
-    this.y = canvasName.height * (Math.random() * 0.8 + 0.1);
-    this.dx = -2.5;
-    this.dy = 0;
-    this.speed = Math.random() * 0.6 + 1.2;
-    this.w = 20;
-    this.h = 10;
-    this.size = Math.random() * 3.5 + 3.1;
-
-    this.draw = function (gameCanvas) {
-      drawRoundObject(
-        gameCanvas,
-        "#D2691E",
-        this.x,
-        this.y,
-        this.size,
-        0,
-        Math.PI * 2
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#8B4513",
-        this.x - 2,
-        this.y - 2,
-        this.size * 0.2,
-        0,
-        Math.PI * 2
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#8B4513",
-        this.x + 1,
-        this.y + 1,
-        this.size * 0.3,
-        0,
-        Math.PI * 2
-      );
-      drawRoundObject(
-        gameCanvas,
-        "#8B4513",
-        this.x - 1,
-        this.y - 1,
-        this.size * 0.2,
-        0,
-        Math.PI * 2
-      );
-    };
-
-    this.reset = function (canvasName) {
-      this.x = canvasName.width + (Math.random() * 460 + 20);
-      this.y = canvasName.height * (Math.random() * 0.8 + 0.1);
-      this.dx = -2.5;
-      this.dy = 0;
-      this.speed = Math.random() * 0.6 + 1.2;
-    };
-  }
-}
-
-class Piece {
-  constructor(x, y, radius, dx, dy) {
-    this.x = x;
-    this.y = y;
-    this.radius = radius;
-    this.dx = dx;
-    this.dy = dy;
-    this.alpha = 1;
-  }
-  draw() {
-    ctx2.save();
-    ctx2.globalAlpha = this.alpha;
-    ctx2.fillStyle = "red";
-    ctx2.beginPath();
-    ctx2.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-    ctx2.fill();
-    ctx2.restore();
-  }
-  update() {
-    this.draw();
-    this.alpha -= 0.01;
-    this.x += this.dx;
-    this.y += this.dy;
-  }
-}
-
-//GAME FUNCTIONS
-
-function drawArrayOnCanvas(gameCanvas, arrayType) {
-  for (i = 0; i < arrayType.length; i++) {
-    arrayType[i].draw(gameCanvas);
-  }
-}
-
-function fillBackgroundStarsArray(
-  canvasName,
-  backgroundStarsArray,
-  backgroundDX,
-  backgroundDY
-) {
-  for (i = 0; i < 150; i++) {
-    backgroundStarsArray[i] = new BackgroundStars(
-      canvasName,
-      backgroundDX,
-      backgroundDY
-    );
-  }
-}
-
-function moveBackgroundStars(canvasName, backgroundStarsArray) {
-  for (i = 0; i < backgroundStarsArray.length; i++) {
-    backgroundStarsArray[i].x += backgroundStarsArray[i].dx;
-    backgroundStarsArray[i].y += backgroundStarsArray[i].dy;
-
-    if (
-      backgroundStarsArray[i].x > canvasName.width ||
-      backgroundStarsArray[i].x < 0
-    ) {
-      backgroundStarsArray[i].returnX(canvasName);
-    }
-
-    if (
-      backgroundStarsArray[i].y > canvasName.height ||
-      backgroundStarsArray[i].y < 0
-    ) {
-      backgroundStarsArray[i].returnY(canvasName);
-    }
-  }
-}
-
-function fillLukesArray(canvasName, lukesArray, marginXluke, marginYluke) {
-  for (var i = 0; i < 1; i++) {
-    lukesArray[i] = new Luke(canvasName, marginXluke, marginYluke);
-  }
-}
-
-function moveLukesArray(lukesArray, maxHeight, minHeight, maxWidth, minWidth) {
-  for (var i = 0; i < lukesArray.length; i++) {
-    lukesArray[i].x += lukesArray[i].dx * lukesArray[i].speed;
-    lukesArray[i].y += lukesArray[i].dy * (lukesArray[i].speed / 2);
-
-    if (lukesArray[i].x > maxWidth) {
-      lukesArray[i].x = maxWidth;
-    }
-
-    if (lukesArray[i].x < minWidth) {
-      lukesArray[i].x = minWidth;
-    }
-    if (lukesArray[i].y > maxHeight) {
-      lukesArray[i].y = maxHeight;
-    }
-
-    if (lukesArray[i].y < minHeight) {
-      lukesArray[i].y = minHeight;
-    }
-  }
-}
-
-function resetLukesArray(lukesArray, canvasName, marginXluke, marginYluke) {
-  for (i = 0; i < lukesArray.length; i++) {
-    lukesArray[i].reset(canvasName, marginXluke, marginYluke);
-  }
-}
-
-function fillCowboysArray(canvasName) {
-  for (var i = 0; i < 4; i++) {
-    cowboysArray[i] = new Cowboy(canvasName);
-  }
-}
-
-function moveCowboysArray(canvasName) {
-  for (var i = 0; i < cowboysArray.length; i++) {
-    cowboysArray[i].x += cowboysArray[i].dx;
-    if (
-      cowboysArray[i].x + 10 > canvasName.width ||
-      cowboysArray[i].x - 10 < 0
-    ) {
-      cowboysArray[i].dx *= -1;
-    }
-  }
-}
-
-function resetCowboysArray(canvasName) {
-  for (var i = 0; i < cowboysArray.length; i++) {
-    cowboysArray[i].reset(canvasName);
-  }
-  positionXcowboy = canvasName.width / 2;
-  directionC = -1;
-  cowboysArray[0].update();
-}
-
-function fillEnemyBulletsArray() {
-  for (var i = 0; i < cowboysArray.length; i++) {
-    cowboyX = cowboysArray[i].x;
-    cowboyY = cowboysArray[i].y;
-    enemyBulletsArray[i] = new EnemyBullet();
-  }
-}
-
-function moveEnemyBulletsArray(canvasName, gameNr, gameScore) {
-  for (var i = 0; i < enemyBulletsArray.length; i++) {
-    enemyBulletsArray[i].x += enemyBulletsArray[i].dx;
-    enemyBulletsArray[i].y += enemyBulletsArray[i].dy;
-    if (
-      enemyBulletsArray[i].x + 10 > canvasName.width ||
-      enemyBulletsArray[i].x - 10 < 0
-    ) {
-      enemyBulletsArray[i].dx *= -1;
-    }
-    if (
-      enemyBulletsArray[i].y > canvasName.height ||
-      enemyBulletsArray[i].y < 0
-    ) {
-      cowboyX = cowboysArray[i].x;
-      cowboyY = cowboysArray[i].y;
-      enemyBulletsArray[i].return();
-      if (
-        enemyBulletsArray[i].x < canvasName.width &&
-        enemyBulletsArray[i].x > 0
-      ) {
-        scorePoints(gameNr, gameScore);
-      }
-    }
-  }
-}
-
-function resetEnemyBulletsArray(canvasName) {
-  for (var i = 0; i < enemyBulletsArray.length; i++) {
-    cowboyX = cowboysArray[i].x;
-    cowboyY = cowboysArray[i].y;
-    enemyBulletsArray[i].reset(canvasName);
-  }
-  EBI = 0;
-}
-
-function fillBulletsArray() {
-  for (var i = 0; i < 5; i++) {
-    bulletsArray[i] = new Bullet();
-  }
-}
-
-function shootBulletsArray(actionSubject) {
-  bulletsArray[BI].update(actionSubject);
-  bulletsArray[BI].shoot();
-  if (BI == 4) {
-    BI = 0;
-  } else {
-    BI++;
-  }
-}
-
-function moveBulletsArray(canvasName) {
-  for (var i = 0; i < bulletsArray.length; i++) {
-    bulletsArray[i].y += bulletsArray[i].dy;
-    bulletsArray[i].x += bulletsArray[i].dx;
-
-    if (
-      bulletsArray[i].y + bulletsArray[i].size > canvasName.height ||
-      bulletsArray[i].y - bulletsArray[i].size < -50
-    ) {
-      bulletsArray[i].reset();
-    }
-  }
-}
-
-function resetBulletsArray() {
-  for (var i = 0; i < bulletsArray.length; i++) {
-    bulletsArray[i].reset();
-  }
-}
-
-function fillHeartsArray(canvasName) {
-  for (var i = 0; i < 3; i++) {
-    if (i == 0) {
-      marginXheart = 60;
-    } else if (i == 1) {
-      marginXheart = 45;
-    } else if (i == 2) {
-      marginXheart = 30;
-    }
-    heartsArray[i] = new Heart(canvasName);
-  }
-}
-
-function moveHeartsArray(canvasName, lukesArray) {
-  for (var i = 0; i < heartsArray.length; i++) {
-    heartsArray[i].y += heartsArray[i].dy;
-    heartsArray[i].x += heartsArray[i].dx;
-
-    if (
-      heartsArray[i].y + heartsArray[i].size > canvasName.height ||
-      heartsArray[i].y - heartsArray[i].size < -50
-    ) {
-      heartsArray[i].lose(canvasName);
-    }
-
-    if (
-      heartsArray[i].x > lukesArray[0].x - 20 &&
-      heartsArray[i].x < lukesArray[0].x + 20 &&
-      heartsArray[i].y > lukesArray[0].y - 16 &&
-      heartsArray[i].y < lukesArray[0].y + 10
-    ) {
-      if (heartNr == 0) {
-        marginXheart = 60;
-        heartsArray[i].reset(canvasName);
-        heartNr = undefined;
-      }
-      if (heartNr == 1) {
-        marginXheart = 45;
-        heartsArray[i].reset(canvasName);
-        heartNr = 0;
-      }
-    }
-  }
-}
-
-function loseHeart(lukesArray, canvasName) {
-  let waitForStart = gamePlayed.slice(4) - 1;
-  if (
-    startGameScreens[waitForStart].classList.contains("hide-screen") &&
-    gameOverScreens[waitForStart].classList.contains("hide-screen") &&
-    bonusRoundArray[waitForStart].classList.contains("hide-screen")
-  ) {
-    for (var i = 0; i < aliensArray2.length; i++) {
-      if (
-        aliensArray2[i].x - aliensArray2[i].size > lukesArray[0].x - 20 &&
-        aliensArray2[i].x + aliensArray2[i].size < lukesArray[0].x + 20 &&
-        aliensArray2[i].y > lukesArray[0].y - 16 &&
-        aliensArray2[i].y < lukesArray[0].y + 10
-      ) {
-        let AC = i;
-        enemyExplosion(AC, canvasName);
-        if (heartNr == undefined) {
-          heartNr = 0;
-          heartsArray[heartNr].lose(canvasName);
-        } else if (heartNr == 0) {
-          heartNr = 1;
-          heartsArray[heartNr].lose(canvasName);
-        } else if (heartNr == 1) {
-          heartNr = 2;
-          heartsArray[heartNr].lose(canvasName);
-          gameOver();
-        }
-      }
-    }
-  }
-}
-
-function resetHeartsArray(canvasName) {
-  for (var i = 0; i < heartsArray.length; i++) {
-    if (i == 0) {
-      marginXheart = 60;
-    } else if (i == 1) {
-      marginXheart = 45;
-    } else if (i == 2) {
-      marginXheart = 30;
-    }
-    heartsArray[i].reset(canvasName);
-  }
-}
-
-function fillAliensArray2(canvasName) {
-  for (var i = 0; i < 8; i++) {
-    aliensArray2[i] = new AlienVertical(canvasName);
-    direction *= -1;
-  }
-}
-
-function moveAliensArray2(canvasName) {
-  for (var i = 0; i < aliensArray2.length; i++) {
-    aliensArray2[i].y += aliensArray2[i].dy;
-    aliensArray2[i].x += aliensArray2[i].dx;
-
-    if (
-      aliensArray2[i].x + 10 > canvasName.width ||
-      aliensArray2[i].x - 10 < 0
-    ) {
-      aliensArray2[i].dx *= -1;
-    }
-    if (aliensArray2[i].y < -500 || aliensArray2[i].y > canvasName.height) {
-      direction *= -1;
-      aliensArray2[i].reset(canvasName);
-    }
-  }
-}
-
-function resetAliensArray2(canvasName) {
-  for (var i = 0; i < aliensArray2.length; i++) {
-    direction *= -1;
-    aliensArray2[i].reset(canvasName);
-  }
-}
-
-function killEnemy(canvasName, gameNr, gameScore) {
-  for (var KA = 0; KA < aliensArray2.length; KA++) {
-    for (var i = 0; i < bulletsArray.length; i++) {
-      if (
-        bulletsArray[i].x > aliensArray2[KA].x - 20 &&
-        bulletsArray[i].x < aliensArray2[KA].x + 20 &&
-        bulletsArray[i].y > aliensArray2[KA].y - 3 &&
-        bulletsArray[i].y < aliensArray2[KA].y + 6
-      ) {
-        enemyExplosion(KA, canvasName);
-        bulletsArray[i].reset();
-        scorePoints(gameNr, gameScore);
-      }
-    }
-  }
-}
-
-function enemyExplosion(AC, canvasName) {
-  setTimeout(() => {
-    for (i = 0; i <= 150; i++) {
-      let dx = (Math.random() - 0.5) * 0.5;
-      let dy = (Math.random() - 0.5) * 0.3;
-      let radius = 0.5;
-      let piece = new Piece(
-        aliensArray2[AC].x,
-        aliensArray2[AC].y,
-        radius,
-        dx,
-        dy
-      );
-
-      debris.push(piece);
-    }
-    explosion();
-    aliensArray2[AC].reset(canvasName);
-  }, 0);
-}
-
-function explosion() {
-  debris.forEach((piece, i) => {
-    if (piece.alpha <= 0) {
-      debris.splice(i, 1);
-    } else piece.update();
-  });
-  requestAnimationFrame(explosion);
-}
-
-function useFuel(lukesArray) {
-  let waitForStart = gamePlayed.slice(4) - 1;
-  if (
-    startGameScreens[waitForStart].classList.contains("hide-screen") &&
-    gameOverScreens[waitForStart].classList.contains("hide-screen") &&
-    bonusRoundArray[waitForStart].classList.contains("hide-screen")
-  ) {
-    fuelBar.use();
-  }
-  if (fuelBar.w === 0) {
-    lukesArray[0].speed = 0;
-  }
-}
-
-function fillFuelStarsArray(canvasName, color) {
-  for (var i = 0; i < 1; i++) {
-    fuelStarsArray[i] = new Star(canvasName, color);
-  }
-}
-
-function moveFuelStarsArray(canvasName, lukesArray) {
-  for (var i = 0; i < fuelStarsArray.length; i++) {
-    fuelStarsArray[i].y += fuelStarsArray[i].dy;
-    fuelStarsArray[i].x += fuelStarsArray[i].dx;
-    if (
-      fuelStarsArray[i].x > canvasName.width + 500 ||
-      fuelStarsArray[i].x < 0
-    ) {
-      fuelStarsArray[i].return(canvasName);
-    }
-    let waitForStart = gamePlayed.slice(4) - 1;
-    if (
-      startGameScreens[waitForStart].classList.contains("hide-screen") &&
-      gameOverScreens[waitForStart].classList.contains("hide-screen") &&
-      bonusRoundArray[waitForStart].classList.contains("hide-screen")
-    ) {
-      if (
-        fuelStarsArray[i].x > lukesArray[0].x - 20 &&
-        fuelStarsArray[i].x < lukesArray[0].x + 20 &&
-        fuelStarsArray[i].y > lukesArray[0].y - 16 &&
-        fuelStarsArray[i].y < lukesArray[0].y + 10
-      ) {
-        fuelStarsArray[i].return(canvasName);
-        fuelBar.refill(lukesArray);
-      }
-    }
-  }
-}
-
-function resetFuelStarsArray(canvasName) {
-  for (var i = 0; i < fuelStarsArray.length; i++) {
-    fuelStarsArray[i].reset(canvasName);
-    fuelStarsArray[i].fall();
-  }
-}
-
-function fillStarsArray(canvasName, color) {
-  for (var i = 0; i < 3; i++) {
-    starsArray[i] = new Star(canvasName, color);
-  }
-}
-
-function dropStar() {
-  starsArray[SI].fall();
-}
-
-function moveStarsArray(canvasName, lukesArray, gameNr, gameScore) {
-  for (var i = 0; i < starsArray.length; i++) {
-    starsArray[i].y += starsArray[i].dy;
-    starsArray[i].x += starsArray[i].dx;
-
-    if (starsArray[i].x > canvasName.width + 500 || starsArray[i].x < 0) {
-      starsArray[i].return(canvasName);
-    }
-    let waitForStart = gamePlayed.slice(4) - 1;
-    if (
-      startGameScreens[waitForStart].classList.contains("hide-screen") &&
-      gameOverScreens[waitForStart].classList.contains("hide-screen") &&
-      bonusRoundArray[waitForStart].classList.contains("hide-screen")
-    ) {
-      if (
-        starsArray[i].x > lukesArray[0].x - 20 &&
-        starsArray[i].x < lukesArray[0].x + 20 &&
-        starsArray[i].y > lukesArray[0].y - 16 &&
-        starsArray[i].y < lukesArray[0].y + 10
-      ) {
-        scorePoints(gameNr, gameScore);
-        starsArray[i].return(canvasName);
-      }
-    }
-  }
-}
-
-function resetStarsArray(canvasName) {
-  for (var i = 0; i < starsArray.length; i++) {
-    starsArray[i].reset(canvasName);
-  }
-  SI = 0;
-  dropStar();
-}
-
-function fillAliensArray1(canvasName) {
-  for (var i = 0; i < 5; i++) {
-    aliensArray1[i] = new AlienHorizontal(canvasName);
-  }
-}
-
-function moveAliensArray1(canvasName) {
-  for (var i = 0; i < aliensArray1.length; i++) {
-    aliensArray1[i].x += aliensArray1[i].dx * aliensArray1[i].speed;
-
-    if (aliensArray1[i].x > canvasName.width + 500 || aliensArray1[i].x < -20) {
-      aliensArray1[i].reset(canvasName);
-    }
-  }
-}
-
-function resetAliensArray1(canvasName) {
-  for (var i = 0; i < aliensArray1.length; i++) {
-    aliensArray1[i].reset(canvasName);
-  }
-}
-
-function fillRocksArray(canvasName) {
-  for (var i = 0; i < 3; i++) {
-    rocksArray[i] = new Rock(canvasName);
-  }
-}
-
-function moveRocksArray(canvasName) {
-  for (var i = 0; i < rocksArray.length; i++) {
-    rocksArray[i].x += rocksArray[i].dx * rocksArray[i].speed;
-
-    if (rocksArray[i].x > canvasName.width + 500 || rocksArray[i].x < -20) {
-      rocksArray[i].reset(canvasName);
-    }
-  }
-}
-
-function resetRocksArray(canvasName) {
-  for (var i = 0; i < rocksArray.length; i++) {
-    rocksArray[i].reset(canvasName);
-  }
-}
-
-function fillCometsArray(canvasName) {
-  for (var i = 0; i < 3; i++) {
-    cometsArray[i] = new Comet(canvasName);
-  }
-}
-
-function moveCometsArray(canvasName) {
-  for (var i = 0; i < cometsArray.length; i++) {
-    cometsArray[i].x += cometsArray[i].dx * cometsArray[i].speed;
-
-    if (cometsArray[i].x > canvasName.width + 500 || cometsArray[i].x < -20) {
-      cometsArray[i].reset(canvasName);
-    }
-  }
-}
-
-function resetCometsArray(canvasName) {
-  for (var i = 0; i < cometsArray.length; i++) {
-    cometsArray[i].reset(canvasName);
-  }
-}
-
-// GET GAME 1 GOING
-
-let fuelBar = new FuelBar();
-fillLukesArray(canvas1, lukesArray1, 4, 0);
-fillBackgroundStarsArray(canvas1, backgroundStarsArray1, -1, 0);
-fillCometsArray(canvas1);
-fillRocksArray(canvas1);
-fillStarsArray(canvas1, "#FFD700");
-fillFuelStarsArray(canvas1, "#05db05");
-fillAliensArray1(canvas1);
-
-function drawGame1Elements() {
-  emptyCanvas(ctx1, canvas1);
-  drawArrayOnCanvas(ctx1, backgroundStarsArray1);
-  drawArrayOnCanvas(ctx1, lukesArray1);
-  drawArrayOnCanvas(ctx1, cometsArray);
-  drawArrayOnCanvas(ctx1, rocksArray);
-  drawArrayOnCanvas(ctx1, aliensArray1);
-  drawArrayOnCanvas(ctx1, starsArray);
-  drawArrayOnCanvas(ctx1, fuelStarsArray);
-  fuelBar.draw(ctx1, canvas1);
-  drawScore(ctx1, canvas1, score1);
-}
-
-function game1Action() {
-  drawGame1Elements();
-  moveBackgroundStars(canvas1, backgroundStarsArray1);
-  useFuel(lukesArray1);
-  moveLukesArray(lukesArray1, 140, 10, 160, 20);
-  moveStarsArray(canvas1, lukesArray1, 1, score1);
-  moveFuelStarsArray(canvas1, lukesArray1);
-  moveAliensArray1(canvas1);
-  moveCometsArray(canvas1);
-  moveRocksArray(canvas1);
-  gameOver(lukesArray1, aliensArray1);
-  gameOver(lukesArray1, cometsArray);
-  gameOver(lukesArray1, rocksArray);
-  requestIdGame1 = requestAnimationFrame(game1Action);
-}
-
-function resetGame1() {
-  emptyCanvas(ctx1, canvas1);
-  resetLukesArray(lukesArray1, canvas1, 4, 0);
-  resetStarsArray(canvas1);
-  resetFuelStarsArray(canvas1);
-  resetAliensArray1(canvas1);
-  resetCometsArray(canvas1);
-  resetRocksArray(canvas1);
-  fuelBar.reset();
-  resetScore(1);
-  cancelAnimationFrame(requestIdGame1);
-  objectSpeedUp = 1;
-}
-
-//GET GAME 2 GOING
-
-fillBackgroundStarsArray(canvas2, backgroundStarsArray2, 0, 1);
-fillLukesArray(canvas2, lukesArray2, 2, 40);
-fillBulletsArray();
-fillHeartsArray(canvas2);
-fillAliensArray2(canvas2);
-
-function drawGame2Elements() {
-  emptyCanvas(ctx2, canvas2);
-  drawArrayOnCanvas(ctx2, backgroundStarsArray2);
-  drawArrayOnCanvas(ctx2, bulletsArray);
-  drawArrayOnCanvas(ctx2, aliensArray2);
-  drawArrayOnCanvas(ctx2, heartsArray);
-  drawArrayOnCanvas(ctx2, lukesArray2);
-  drawScore(ctx2, canvas2, score2);
-}
-
-function game2Action() {
-  drawGame2Elements();
-  moveBackgroundStars(canvas2, backgroundStarsArray2);
-  moveLukesArray(lukesArray2, 140, 60, 280, 20);
-  moveBulletsArray(canvas2);
-  moveAliensArray2(canvas2);
-  moveHeartsArray(canvas2, lukesArray2);
-  loseHeart(lukesArray2, canvas2);
-  killEnemy(canvas2, 2, score2);
-  requestIdGame2 = requestAnimationFrame(game2Action);
-}
-
-function resetGame2() {
-  emptyCanvas(ctx2, canvas2);
-  resetLukesArray(lukesArray2, canvas2, 2, 40);
-  resetBulletsArray();
-  resetAliensArray2(canvas2);
-  resetHeartsArray(canvas2);
-  resetScore(2);
-  cancelAnimationFrame(requestIdGame2);
-  objectSpeedUp = 1;
-}
-
-//GET GAME 3 GOING
-
-fillBackgroundStarsArray(canvas3, backgroundStarsArray3, 0, -0.5);
-fillLukesArray(canvas3, lukesArray3, 2, -60);
-fillCowboysArray(canvas3);
-fillEnemyBulletsArray(canvas3);
-
-function drawGameElements3() {
-  emptyCanvas(ctx3, canvas3);
-  drawEarth(canvas3, ctx3);
-  drawArrayOnCanvas(ctx3, backgroundStarsArray3);
-  drawArrayOnCanvas(ctx3, lukesArray3);
-  drawArrayOnCanvas(ctx3, cowboysArray);
-  drawArrayOnCanvas(ctx3, enemyBulletsArray);
-  drawScore(ctx3, canvas3, score3);
-}
-
-function game3Action() {
-  drawGameElements3();
-  moveBackgroundStars(canvas3, backgroundStarsArray3);
-  moveLukesArray(lukesArray3, 100, 10, 280, 20);
-  moveCowboysArray(canvas3);
-  moveEnemyBulletsArray(canvas3, 3, score3);
-  gameOver(lukesArray3, enemyBulletsArray);
-  requestIdGame3 = requestAnimationFrame(game3Action);
-}
-
-function resetGame3() {
-  emptyCanvas(ctx3, canvas3);
-  resetLukesArray(lukesArray3, canvas3, 2, 40);
-  resetCowboysArray(canvas3);
-  resetEnemyBulletsArray(canvas3);
-  resetScore(3);
-  cancelAnimationFrame(requestIdGame3);
-}
-
-//FOOTER
-const textsArr = document.getElementsByClassName("foot-text");
-const footLinks = document
-  .getElementById("foot-texts")
-  .getElementsByTagName("a");
-let subjectFooter;
-let subjectFooter2;
-
-function openFootText() {
-  closeFootTexts();
-  event.target.classList.add("highlight");
-  subjectFooter = event.target.id;
-  const textShown = document.getElementById(`${subjectFooter}-text`);
-  textShown.classList.remove("hide-text");
-}
-
-function closeFootTexts() {
-  for (x = 0; x < textsArr.length; x++) {
-    textsArr[x].classList.add("hide-text");
-    footLinks[x].classList.remove("highlight");
-  }
-}
-
-function addFooterOpeningEventListeners() {
-  for (x = 0; x < footLinks.length; x++) {
-    footLinks[x].addEventListener("click", openFootText);
-  }
-}
-addFooterOpeningEventListeners();
-
-function closeViaFooter() {
-  if (subjectFooter == subjectFooter2) {
-    closeFootTexts();
-    subjectFooter2 = undefined;
-  } else {
-    subjectFooter2 = event.target.id;
-  }
-}
-
-function addFooterClosingEventListeners() {
-  for (x = 0; x < footLinks.length; x++) {
-    footLinks[x].addEventListener("click", closeViaFooter);
-  }
-}
-addFooterClosingEventListeners();
-
-document
-  .getElementById("openReg3")
-  .addEventListener("click", openCloseRegistrationForm);
-
-const hr2 = document.getElementById("hr2");
-
-window.addEventListener("scroll", () => {
-  const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-
-  if (scrollTop + clientHeight >= scrollHeight - 5) {
-    hr2.classList.remove("hide-ruler");
-  } else {
-    hr2.classList.add("hide-ruler");
-  }
-});
