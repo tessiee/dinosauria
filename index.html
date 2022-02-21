@@ -5,32 +5,346 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="stylesheet" href="style.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
-    />
-    <link rel="icon" href="/images/aliendinosaur.png" />
+    <link rel="stylesheet" href="style.css"  />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <link rel="icon" href="alien.png"/>
 
-    <title>Dinosauria</title>
+    <title>Drawings of Aliens &mdash; Exclusive material</title>
   </head>
+  
+  <body onpageshow="disableScrollingIntro()"
+  onresize="setAnimationWidth()"
+>
 
-  <body>
-    <!--header + animation-->
-    <header>
-      <div class="head-text-box" id="head-text-box">
-        <h1>Dinosauria</h1>
+    <!--INTRO POPUP SCREEN-->
+
+<div id="intro-screen" class="intro-screen">
+  <div id="intro-container" class="intro-container">
+    <div class="intro" id="intro">
+      <img class="startpic" id="startpic" src="Alien-Nightmare.jpg" alt="alien" />
+      <h2>WARNING!</h2> 
+      <p><br>This webpage contains material that may be harmful or traumatizing to some viewers.
+      </p>
+      <button class="closeIntro" id="closeIntro"><strong>I'M A TOUGH GUY</strong></button>
+    </div>
+    </div>
+</div>
+
+
+<!--header + animation + login + registration -->
+
+<hr class="hr-1">
+    <div class="page-head" id="page-head">
+      <header>
+        <h1>Drawings of Aliens</h1>
+        <p>Exclusive material</p>
+      </header>
+      <br />
+
+      <!--HEADER ANIMATION-->
+<div class="animation-box" id="animation-box">
+</div>
+</div>
+
+<!--LOGIN/REG BUTTONS-->
+<button class="openLogin" id="openLogin">Log in</button>
+<button class="openReg" id="openReg">Register here</button>
+<!--LOGIN FORM-->
+
+<div id="loginContainer">
+  <div class="loginBox hideLogin" id="loginBox">
+    <button class="closeLogin" id="closeLogin"><strong>✖</strong></button>
+    <form class="loginForm" id="loginForm">
+      <h2>Log in</h2>
+      <div class="loginFormField" id="loginField0">
+        <label for="username">Username</label>
+        <input type="text" id="loginUsername" placeholder="Enter username">
+        <small>Error message</small>
       </div>
-    </header>
+      <div class="loginFormField" id="loginField1">
+        <label for="password">Password</label>
+        <input type="password" id="loginPassword" placeholder="Enter password">
+        <i class="far fa-eye" id="showLoginPass"></i>
+      </div>
+      <button type="submit" class="loginUser" id="loginUser">Log in</button>
+      <button typ="submit" class="helpUser" id="helpUser">Help</button>
+    </form>
+  </div>
+  </div>
 
-    <div class="animation-box" id="animation-box">
-      <canvas class="animation-canvas" id="animation-canvas"> </canvas>
+  <!--REGISTRATION FORM-->
+
+  <div id="reg-container"></div>
+  <div class="registrationBox hideReg" id="registrationBox">
+    <button class="closeReg" id="closeReg"><strong>✖</strong></button>
+    <form class="registerForm" id="registerForm">
+      <h2>Register with us</h2>
+      <div class="registerFormField" id="field0">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Enter username" />
+        <small>Error message</small>
+      </div>
+      <div class="registerFormField" id="field1">
+        <label for="email">Email address</label>
+        <input type="text" id="email" placeholder="Enter email address" />
+        <small>Error message</small>
+      </div>
+      <div class="registerFormField" id="field2">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter password" />
+        <i class="far fa-eye" id="showPass"></i>
+        <small>Error message</small>
+      </div>
+      <div class="registerFormField" id="field3">
+        <label for="confirmPassword">Confirm password</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          placeholder="Confirm password"
+        />
+        <i class="far fa-eye" id="showConfirm"></i>
+        <small>Error message</small>
+      </div>
+      <small id="signUp" class="signUp"><strong>Welcome on board!</strong></small>
+      <button type="submit" class="regSubmit" id="regSubmit">Create account</button>
+    </form>
+  </div>
+
+    <!--SIDEBAR OPEN BUTTON-->
+
+    <nav class="openSidebar hideSidebarButton" id="openSidebar">
+      <div class="open">
+        <a><strong>DRAWINGS</strong></a>
+      </div>
+    </nav>
+
+    <!--SIDEBAR MENU (DRAWINGS LINKS)-->
+    <nav class="sidebar hideSidebar" id="sidebar">
+      <div class="logo">
+        <img src="alien.png" alt="drawings" />
+      </div>
+      <ul id="menuLinks">
+        <li><a href="#/" id="animals"><b>Aliens with animals</b></a></li>
+        <li><a href="#/" id="plants"><b>Aliens with plants</b></a></li>
+        <li><a href="#/" id="instruments"><b>Aliens with instruments</b></a></li>
+        <li><a href="#/" id="foods"><b>Aliens with food</b></a></li>
+        <li><a href="#/" id="toys"><b>Aliens with toys</b></a></li>
+        <li><a href="#/" class="exclusive" id="exclusives"><b>Exclusive</b></a></li>
+      </ul>
+    </nav>
+
+    <!--BOXES WITH DRAWINGS-->
+
+    <div id="drawingsContainer">
+      <div class= "drawingsBox hide-box" id="drawingsBox">
+        <button type="button" class="closeDrawings" id="closeDrawings">✖
+        </button>
+        <button type="button" class="otherDrawing next" id="nextDrawing">&#11166;</button>
+        <button type="button" class="otherDrawing previous" id="previousDrawing">&#11164;</button>
+        <div class="animals drawings hideDrawings" id="animalsDrawings">
+        <h2>Aliens with animals</h2>
+        <img id="animalDrawing1" class="hide-drawing" src="/drawings/aliendinosaur.png" alt="Aliens with animals" />
+        <img height="300px" width="350px" id="animalDrawing2" class="hide-drawing" src="/drawings/aliencat.png" alt="Aliens with animals" />
+      </div>
+      <div class="plants drawings hideDrawings" id="plantsDrawings">
+        <h2>Aliens with plants</h2>
+        <img height="380px" width="450px" id="plantDrawing1" class="hide-drawing" src="/drawings/alienplant.png" alt="Aliens with plants" />
+        <img id="plantDrawing2" class="hide-drawing" src="/drawings/alienpalm.png" alt="Aliens with plants" />
+      </div>
+      <div class="instruments drawings hideDrawings" id="instrumentsDrawings">
+        <h2>Aliens with instruments</h2>
+        <img height="350px" id="instrumentDrawing1" class="hide-drawing" src="/drawings/alienflute.png" alt="Aliens with instruments" />
+        <img height="380px" width="250px" id="instrumentDrawing2" class="hide-drawing" src="/drawings/aliendrums.png" alt="Aliens with instruments" />
+      </div>
+      <div class="foods drawings hideDrawings" id="foodsDrawings">
+        <h2>Aliens with food</h2>
+        <img id="foodDrawing1" class="hide-drawing" src="/drawings/alienfood.png" alt="Aliens with food" />
+        <img height="300px" id="foodDrawing2" class="hide-drawing" src="/drawings/alienbanana2.png" alt="Aliens with food" />
+      </div>
+      <div class="toys drawings hideDrawings" id="toysDrawings">
+        <h2>Aliens with toys</h2>
+        <img id="toyDrawing1" class="hide-drawing" src="/drawings/alienteddy.png" alt="Aliens with toys" />
+        <img height="300px" id="toyDrawing2" class="hide-drawing" src="/drawings/alienblock.png" alt="Aliens with toys" />
+      </div>
+      <div class="exclusives drawings hideDrawings" id="exclusivesDrawings">
+        <h2>Exclusive drawings</h2>
+        <img height="400px" width="400px" id="exclusiveDrawing1" class="hide-drawing" src="/drawings/alientessie.png" alt="Exclusive drawings" />
+        <img height="330px" width="400px" id="exclusiveDrawing2" class="hide-drawing" src="/drawings/alieningrid.png" alt="Exclusive drawings" />
+        <img height="350px" width="300px" id="exclusiveDrawing3" class="hide-drawing" src="/drawings/alienladyginger.png" alt="Exclusive drawings" />
+        <img height="350px" width="300px" id="exclusiveDrawing4" class="hide-drawing" src="/drawings/alienladycowboy.png" alt="Exclusive drawings" />
+        <img height="350px" width="300px" id="exclusiveDrawing5" class="hide-drawing" src="/drawings/aliencleaninglady.png" alt="Exclusive drawings" />
+        <img height="350px" width="300px" id="exclusiveDrawing6" class="hide-drawing" src="/drawings/alienladygingernurse.png" alt="Exclusive drawings" />
+      </div>
+    </div>
     </div>
 
-    <div class="game-box" id="game-box">
-      <canvas class="game-canvas" id="game-canvas"></canvas>
-    </div>
+    <!---BOX FOR EVENTS-->
+
+      <div class="events-container" id="events-container">
+        <h1>Upcoming Events</h1>
+        <div class="filter-container">
+          <input type="text" id="events-filter" class="events-filter" placeholder="Search events">
+        </div>
+        <div class="events-box" style="overflow-y:scroll;" id="events-box">
+          <div class="events-list" id="events-list"></div>
+          <div class="events-loader" id="events-loader">
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+          </div>
+        </div>
+      </div>
+
+    <!--BOX WITH GAMES-->
+
+      <div class="gameBox" id="gameBox">
+        <h1>Games</h1>
+        <div class="gameBox1" id="gameBox1">
+      <div class="gameInfo" id="game1info">
+        <h2>Intergalactic hailstorm</h2>
+        <p>While under attack by evil aliens, Luke gets caught in an intergalactic hailstorm! Help him collect stars and be sure to keep him fueled up.</p>
+        </div>
+        
+        <div class="game" id="game1">
+          <button type="button" id="show-controls1" class="show-controls hide-btn">SHOW CONTROLS</button>
+          <div id="controls1" class="controls-box hide-controls">
+
+          <button type="button" class="left-control controls">⇦ <br><p>left</p></button>
+          <button type="button" class="right-control controls">⇨ <br><p>right</p></button>
+          <button type="button" class="up-control controls">⇧ <br><p>up</p></button>
+          <button type="button" class="down-control controls">⇩ <br><p>down</p></button>
+        </div>
+          <button type="submit" id="playGame1" class="playGame">Play game</button>
+          <canvas height="150" width="300" class="theGame hide-game" id="theGame1">
+          </canvas>
+          <div id="start-game1" class="start-game hide-screen">
+            <button type="button" id="start-btn1" class="start-btn">START GAME</button>
+          </div>
+          <div id="bonus-round1" class="bonus-round hide-screen">
+            <p class="bonusround-text">BONUS ROUND</p>
+            <img src="flames.png" alt="FLAMES">
+          </div>
+          <div id="game-over1" class="game-over hide-screen">
+            <p class="gameover-text">GAME OVER</p>
+            <p>PLAY AGAIN?</p>
+            <button type="button" class="play-yes play-again">YES</button>
+            <button type="button" class="play-no play-again">NO</button>
+          </div>
+        </div>
+        </div>
+        <div class="gameBox2" id="gameBox2">
+      <div class="gameInfo" id="game2info">
+        <h2>Space travel</h2>
+        <p>During his space travel, Luke encounters rogue aliens who wish to stop him from visiting the Earthlings. Eliminate them to secure safe passage.</p>
+        </div>
+        
+        <div class="game" id="game2">
+          <button type="button" id="show-controls2" class="show-controls hide-btn">SHOW CONTROLS</button>
+          <div id="controls2" class="controls-box hide-controls">
+            <button type="button" class="left-control controls">⇦ <br><p>left</p></button>
+            <button type="button" class="right-control controls">⇨ <br><p>right</p></button>
+            <button type="button" class="up-control controls">⇧ <br><p>up</p></button>
+            <button type="button" class="down-control controls">⇩ <br><p>down</p></button>
+            <button type="button" class="f-control controls">F <br><p>fire</p></button>
+          </div>
+          <button type="submit" id="playGame2" class="playGame">Play game</button>
+          
+          <canvas height="150" width="300" class="theGame hide-game" id="theGame2">
+          </canvas>
+          <div id="start-game2" class="start-game hide-screen">
+            <button type="button" id="start-btn2" class="start-btn">START GAME</button>
+          </div>
+          <div id="bonus-round2" class="bonus-round hide-screen">
+            <p class="bonusround-text">BONUS ROUND</p>
+            <img src="flames.png" alt="FLAMES">
+          </div>
+          <div id="game-over2" class="game-over hide-screen">
+            <p class="gameover-text">GAME OVER</p>
+            <p>PLAY AGAIN?</p>
+            <button type="button" class="play-yes play-again">YES</button>
+            <button type="button" class="play-no play-again">NO</button>
+          </div>
+        </div>
+      </div>
+        <div class="gameBox3" id="gameBox3">
+      <div class="gameInfo" id="game3info">
+        <h2>Cowboys & Aliens</h2>
+        <p>Evil cowboys are trying to shoot Luke down! Help him with his landing on planet Earth. <br> Only with his safe landing, peace will come. </p>
+        </div>
+        
+        <div class="game" id="game3">
+          <button type="button" id="show-controls3" class="show-controls hide-btn">SHOW CONTROLS</button>
+          <div id="controls3" class="controls-box hide-controls">
+            <button type="button" class="left-control controls">⇦ <br><p>left</p></button>
+            <button type="button" class="right-control controls">⇨ <br><p>right</p></button>
+            <button type="button" class="up-control controls">⇧ <br><p>up</p></button>
+            <button type="button" class="down-control controls">⇩ <br><p>down</p></button>
+          </div>
+          <button type="submit" id="playGame3" class="playGame">Play game</button>
+          
+          <canvas class="theGame hide-game" id="theGame3">
+          </canvas>
+          <div id="start-game3" class="start-game hide-screen">
+            <button type="button" id="start-btn3" class="start-btn">START GAME</button>
+          </div>
+          <div id="bonus-round3" class="bonus-round hide-screen">
+            <p class="bonusround-text">BONUS ROUND</p>
+            <img src="flames.png" alt="FLAMES">
+          </div>
+          <div id="game-over3" class="game-over hide-screen">
+            <p class="gameover-text">GAME OVER</p>
+            <p>PLAY AGAIN?</p>
+            <button type="button" class="play-yes play-again">YES</button>
+            <button type="button" class="play-no play-again">NO</button>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <!--FOOTER-->
+
+    <div class="footer" id="footer">
+      <div class="footer-textbox" id="foot-texts">
+          <div class="link">
+            <a href="#/" id="contact">Contact</a>
+          </div>
+          <div class="foot-text hide-text" id="contact-text">
+          <p>
+            Feel free to contact us anytime, we will get back to you asap.
+            <br />
+            <br />
+            <p class="email">email: greetings@alien.com</p>
+          </p>
+        </div>
+        <div class="link"><a href="#/" id="register">Register</a></div>
+        <div class="foot-text hide-text" id="register-text">
+          <p><li class="openReg3" id="openReg3"><strong>Register</strong></li> with us for your weekly dosage of alien.</p>
+        </div>
+        <div class="link"><a href="#/" id="faq">Faq</a></div>
+        <div class="foot-text hide-text" id="faq-text">
+          <p>
+            Visit our FAQ-page to find the answers to all your questions. Feel free to contact us for special inquiries.
+          </p>
+        </div>
+        <div class="link"><a href="#/" id="aboutUs">About us</a></div>
+        <div class="foot-text hide-text" id="aboutUs-text">
+          <p>We come in peace.</p>
+        </div>
+        <div class="link"><a href="#/" id="more">More</a></div>
+        <div class="foot-text hide-text" id="more-text">
+        <p>
+            Visit our other webpages: </br>
+            .... <br>
+            .... <br>
+          </p>
+        </div>
+      </div>
+      </div>
+
+<hr class="hr-2 hide-ruler" id="hr2">
 
     <script type="text/javascript" src="script.js"></script>
+    <script type="text/javascript" src="events.json"></script>
+    <script type="text/javascript" src="highscores.json"></script>
   </body>
 </html>
