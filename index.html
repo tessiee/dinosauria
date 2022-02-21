@@ -1,350 +1,848 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+// OBJECT CLASSES
 
-    <link rel="stylesheet" href="style.css"  />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
-    <link rel="icon" href="alien.png"/>
+class Cloud {
+  constructor(canvasName) {
+    this.x = canvasName.width + (Math.random() * 300 + 20);
+    this.y = Math.random() * 60 + 20;
+    this.dx = -Math.random() * 1.6 - 1.0;
+    this.dy = 0;
+    this.speed = Math.random() * 0.3 + 0.2;
+    this.size = 5;
 
-    <title>Drawings of Aliens &mdash; Exclusive material</title>
-  </head>
-  
-  <body onpageshow="disableScrollingIntro()"
-  onresize="setAnimationWidth()"
->
+    this.draw = function (canvasContext) {
+      drawRoundObject(
+        canvasContext,
+        "#ffffff",
+        this.x,
+        this.y,
+        this.size,
+        0,
+        Math.PI * 2
+      );
+      drawRoundObject(
+        canvasContext,
+        "#ffffff",
+        this.x + 9,
+        this.y - 4.5,
+        this.size * 1.8,
+        0,
+        Math.PI * 2
+      );
+      drawRoundObject(
+        canvasContext,
+        "#ffffff",
+        this.x + 18,
+        this.y,
+        this.size,
+        0,
+        Math.PI * 2
+      );
+    };
 
-    <!--INTRO POPUP SCREEN-->
+    this.reset = function (canvasName) {
+      this.x = canvasName.width + (Math.random() * 100 + 20);
+      this.y = Math.random() * 60 + 20;
+      this.speed = Math.random() * 0.3 + 0.2;
+    };
+  }
+}
 
-<div id="intro-screen" class="intro-screen">
-  <div id="intro-container" class="intro-container">
-    <div class="intro" id="intro">
-      <img class="startpic" id="startpic" src="Alien-Nightmare.jpg" alt="alien" />
-      <h2>WARNING!</h2> 
-      <p><br>This webpage contains material that may be harmful or traumatizing to some viewers.
-      </p>
-      <button class="closeIntro" id="closeIntro"><strong>I'M A TOUGH GUY</strong></button>
-    </div>
-    </div>
-</div>
+class Bird {
+  constructor(canvasName) {
+    this.x = canvasName.width + (Math.random() * 300 + 20);
+    this.y = Math.random() * 40 + 20;
+    this.dx = -1;
+    this.dy = 0;
+    this.speed = 1;
+    this.size = 3;
 
+    this.draw = function (canvasContext) {
+      drawEllipseObject(
+        canvasContext,
+        "#000000",
+        this.x,
+        this.y,
+        this.size * 1.4,
+        4,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#000000",
+        this.x + 4,
+        this.y - 4,
+        this.size * 0.6,
+        4,
+        2.1,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#000000",
+        this.x - 5,
+        this.y - 4,
+        this.size * 2,
+        2,
+        0.7,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#000000",
+        this.x + 6,
+        this.y + 3,
+        this.size * 2,
+        2,
+        3.4,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#000000",
+        this.x - 5,
+        this.y + 3,
+        this.size * 0.5,
+        2,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#000000",
+        this.x - 7,
+        this.y + 5,
+        this.size * 0.08,
+        2,
+        1,
+        0,
+        Math.PI * 2,
+        true
+      );
+    };
 
-<!--header + animation + login + registration -->
+    this.reset = function (canvasName) {
+      this.x = canvasName.width + (Math.random() * 100 + 20);
+      this.y = Math.random() * 40 + 20;
+    };
+  }
+}
 
-<hr class="hr-1">
-    <div class="page-head" id="page-head">
-      <header>
-        <h1>Drawings of Aliens</h1>
-        <p>Exclusive material</p>
-      </header>
-      <br />
+class Dinosaur {
+  constructor() {
+    this.x = 100;
+    this.y = dinoY;
+    this.dx = 0;
+    this.dy = 0;
+    this.speed = 1;
+    this.size = 5;
 
-      <!--HEADER ANIMATION-->
-<div class="animation-box" id="animation-box">
-</div>
-</div>
+    this.draw = function (canvasContext) {
+      drawEllipseObject(
+        canvasContext,
+        "#00ad37",
+        this.x - 32,
+        this.y + 27,
+        this.size * 0.5,
+        9,
+        0.5,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00b439",
+        this.x - 31,
+        this.y + 25,
+        this.size * 0.4,
+        9,
+        0.55,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00b439",
+        this.x - 26,
+        this.y + 27,
+        this.size * 0.7,
+        9,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00ad37",
+        this.x - 19,
+        this.y + 27,
+        this.size * 0.7,
+        9,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00b439",
+        this.x - 9,
+        this.y + 27,
+        this.size * 0.7,
+        9,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00ad37",
+        this.x - 2,
+        this.y + 27,
+        this.size * 0.7,
+        9,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawRectObject(
+        canvasContext,
+        "#00ad37",
+        this.x - 7.5,
+        this.y + 25,
+        this.size * 1.8,
+        -25 - necklength
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00ad37",
+        this.x - 15,
+        this.y + 22,
+        this.size * 3,
+        9,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00b439",
+        this.x - 14.5,
+        this.y + 22.8,
+        this.size * 3,
+        9,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawRectObject(
+        canvasContext,
+        "#00b439",
+        this.x - 5.5,
+        this.y + 25,
+        this.size * 1.2,
+        -25 - necklength
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00b439",
+        this.x - 5,
+        this.y - 4 - necklength,
+        this.size * 0.4,
+        2,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00ad37",
+        this.x + 2,
+        this.y - 4 - necklength,
+        this.size * 0.4,
+        2,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00b439",
+        this.x + 2,
+        this.y + 1 - necklength,
+        this.size * 2,
+        5,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#000000",
+        this.x,
+        this.y - necklength,
+        this.size * 0.4,
+        1.5,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#ffffff",
+        this.x - 0.5,
+        this.y - 1 - necklength,
+        this.size * 0.2,
+        1,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#000000",
+        this.x + 8.5,
+        this.y + 1.5 - necklength,
+        this.size * 0.1,
+        0.4,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#000000",
+        this.x + 10.5,
+        this.y + 1.5 - necklength,
+        this.size * 0.1,
+        0.4,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+    };
+  }
+}
 
-<!--LOGIN/REG BUTTONS-->
-<button class="openLogin" id="openLogin">Log in</button>
-<button class="openReg" id="openReg">Register here</button>
-<!--LOGIN FORM-->
+class Tree {
+  constructor(canvasName) {
+    this.x = canvasName.width + (Math.random() * 300 + 20);
+    this.y = Math.random() * -40 + 140;
+    this.dx = -0.5;
+    this.dy = 0;
+    this.speed = 1;
+    this.size = (Math.random() - 4) * 1;
 
-<div id="loginContainer">
-  <div class="loginBox hideLogin" id="loginBox">
-    <button class="closeLogin" id="closeLogin"><strong>✖</strong></button>
-    <form class="loginForm" id="loginForm">
-      <h2>Log in</h2>
-      <div class="loginFormField" id="loginField0">
-        <label for="username">Username</label>
-        <input type="text" id="loginUsername" placeholder="Enter username">
-        <small>Error message</small>
-      </div>
-      <div class="loginFormField" id="loginField1">
-        <label for="password">Password</label>
-        <input type="password" id="loginPassword" placeholder="Enter password">
-        <i class="far fa-eye" id="showLoginPass"></i>
-      </div>
-      <button type="submit" class="loginUser" id="loginUser">Log in</button>
-      <button typ="submit" class="helpUser" id="helpUser">Help</button>
-    </form>
-  </div>
-  </div>
+    this.draw = function (canvasContext) {
+      drawEllipseObject(
+        canvasContext,
+        "#005e02",
+        this.x - 3,
+        this.y - 17,
+        3,
+        4,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#005e02",
+        this.x + 1,
+        this.y - 9,
+        3,
+        4,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#005e02",
+        this.x - 5,
+        this.y - 7,
+        3,
+        4,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawRectObject(
+        canvasContext,
+        "#894c00",
+        this.x,
+        this.y,
+        this.size,
+        this.size * 4
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#005e02",
+        this.x,
+        this.y - 15,
+        3,
+        4,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#005e02",
+        this.x - 2,
+        this.y - 12,
+        3,
+        3,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#005e02",
+        this.x - 6,
+        this.y - 13,
+        3,
+        3,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#005e02",
+        this.x,
+        this.y - 7,
+        3,
+        3,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+    };
 
-  <!--REGISTRATION FORM-->
+    this.move = function (direction) {
+      this.speed = 1 * direction;
+    };
 
-  <div id="reg-container"></div>
-  <div class="registrationBox hideReg" id="registrationBox">
-    <button class="closeReg" id="closeReg"><strong>✖</strong></button>
-    <form class="registerForm" id="registerForm">
-      <h2>Register with us</h2>
-      <div class="registerFormField" id="field0">
-        <label for="username">Username</label>
-        <input type="text" id="username" placeholder="Enter username" />
-        <small>Error message</small>
-      </div>
-      <div class="registerFormField" id="field1">
-        <label for="email">Email address</label>
-        <input type="text" id="email" placeholder="Enter email address" />
-        <small>Error message</small>
-      </div>
-      <div class="registerFormField" id="field2">
-        <label for="password">Password</label>
-        <input type="password" id="password" placeholder="Enter password" />
-        <i class="far fa-eye" id="showPass"></i>
-        <small>Error message</small>
-      </div>
-      <div class="registerFormField" id="field3">
-        <label for="confirmPassword">Confirm password</label>
-        <input
-          type="password"
-          id="confirmPassword"
-          placeholder="Confirm password"
-        />
-        <i class="far fa-eye" id="showConfirm"></i>
-        <small>Error message</small>
-      </div>
-      <small id="signUp" class="signUp"><strong>Welcome on board!</strong></small>
-      <button type="submit" class="regSubmit" id="regSubmit">Create account</button>
-    </form>
-  </div>
+    this.still = function () {
+      this.speed = 0;
+    };
 
-    <!--SIDEBAR OPEN BUTTON-->
+    this.reset = function (canvasName) {
+      this.x = canvasName.width + (Math.random() * 100 + 20);
+      this.y = Math.random() * -40 + 140;
+    };
+  }
+}
 
-    <nav class="openSidebar hideSidebarButton" id="openSidebar">
-      <div class="open">
-        <a><strong>DRAWINGS</strong></a>
-      </div>
-    </nav>
+class SmallRock {
+  constructor(canvasName) {
+    this.x = 150;
+    this.y = canvasName.height - 5;
+    this.dx = 0;
+    this.dy = 0;
+    this.speed = 0;
+    this.size = 1;
 
-    <!--SIDEBAR MENU (DRAWINGS LINKS)-->
-    <nav class="sidebar hideSidebar" id="sidebar">
-      <div class="logo">
-        <img src="alien.png" alt="drawings" />
-      </div>
-      <ul id="menuLinks">
-        <li><a href="#/" id="animals"><b>Aliens with animals</b></a></li>
-        <li><a href="#/" id="plants"><b>Aliens with plants</b></a></li>
-        <li><a href="#/" id="instruments"><b>Aliens with instruments</b></a></li>
-        <li><a href="#/" id="foods"><b>Aliens with food</b></a></li>
-        <li><a href="#/" id="toys"><b>Aliens with toys</b></a></li>
-        <li><a href="#/" class="exclusive" id="exclusives"><b>Exclusive</b></a></li>
-      </ul>
-    </nav>
+    this.draw = function (canvasContext) {
+      drawRectObject(
+        canvasContext,
+        "#b16100",
+        this.x,
+        canvasName.height - 10,
+        40,
+        10
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#005e02",
+        this.x + 20,
+        canvasName.height - 10,
+        20,
+        1,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+    };
 
-    <!--BOXES WITH DRAWINGS-->
+    this.reset = function () {
+      this.x = 50;
+      this.y = canvasName.height - 5;
+    };
+  }
+}
 
-    <div id="drawingsContainer">
-      <div class= "drawingsBox hide-box" id="drawingsBox">
-        <button type="button" class="closeDrawings" id="closeDrawings">✖
-        </button>
-        <button type="button" class="otherDrawing next" id="nextDrawing">&#11166;</button>
-        <button type="button" class="otherDrawing previous" id="previousDrawing">&#11164;</button>
-        <div class="animals drawings hideDrawings" id="animalsDrawings">
-        <h2>Aliens with animals</h2>
-        <img id="animalDrawing1" class="hide-drawing" src="/drawings/aliendinosaur.png" alt="Aliens with animals" />
-        <img height="300px" width="350px" id="animalDrawing2" class="hide-drawing" src="/drawings/aliencat.png" alt="Aliens with animals" />
-      </div>
-      <div class="plants drawings hideDrawings" id="plantsDrawings">
-        <h2>Aliens with plants</h2>
-        <img height="380px" width="450px" id="plantDrawing1" class="hide-drawing" src="/drawings/alienplant.png" alt="Aliens with plants" />
-        <img id="plantDrawing2" class="hide-drawing" src="/drawings/alienpalm.png" alt="Aliens with plants" />
-      </div>
-      <div class="instruments drawings hideDrawings" id="instrumentsDrawings">
-        <h2>Aliens with instruments</h2>
-        <img height="350px" id="instrumentDrawing1" class="hide-drawing" src="/drawings/alienflute.png" alt="Aliens with instruments" />
-        <img height="380px" width="250px" id="instrumentDrawing2" class="hide-drawing" src="/drawings/aliendrums.png" alt="Aliens with instruments" />
-      </div>
-      <div class="foods drawings hideDrawings" id="foodsDrawings">
-        <h2>Aliens with food</h2>
-        <img id="foodDrawing1" class="hide-drawing" src="/drawings/alienfood.png" alt="Aliens with food" />
-        <img height="300px" id="foodDrawing2" class="hide-drawing" src="/drawings/alienbanana2.png" alt="Aliens with food" />
-      </div>
-      <div class="toys drawings hideDrawings" id="toysDrawings">
-        <h2>Aliens with toys</h2>
-        <img id="toyDrawing1" class="hide-drawing" src="/drawings/alienteddy.png" alt="Aliens with toys" />
-        <img height="300px" id="toyDrawing2" class="hide-drawing" src="/drawings/alienblock.png" alt="Aliens with toys" />
-      </div>
-      <div class="exclusives drawings hideDrawings" id="exclusivesDrawings">
-        <h2>Exclusive drawings</h2>
-        <img height="400px" width="400px" id="exclusiveDrawing1" class="hide-drawing" src="/drawings/alientessie.png" alt="Exclusive drawings" />
-        <img height="330px" width="400px" id="exclusiveDrawing2" class="hide-drawing" src="/drawings/alieningrid.png" alt="Exclusive drawings" />
-        <img height="350px" width="300px" id="exclusiveDrawing3" class="hide-drawing" src="/drawings/alienladyginger.png" alt="Exclusive drawings" />
-        <img height="350px" width="300px" id="exclusiveDrawing4" class="hide-drawing" src="/drawings/alienladycowboy.png" alt="Exclusive drawings" />
-        <img height="350px" width="300px" id="exclusiveDrawing5" class="hide-drawing" src="/drawings/aliencleaninglady.png" alt="Exclusive drawings" />
-        <img height="350px" width="300px" id="exclusiveDrawing6" class="hide-drawing" src="/drawings/alienladygingernurse.png" alt="Exclusive drawings" />
-      </div>
-    </div>
-    </div>
+// ANIMATION OBJECTS
 
-    <!---BOX FOR EVENTS-->
+const animationBox = document.getElementById("animation-box");
+const animationCanvas = document.getElementById("animation-canvas");
+const ctxAnimation = animationCanvas.getContext("2d");
+let requestIdAnimation;
+let cloudsArray1 = [];
+let dinosaursArray1 = [];
+let birdsArray1 = [];
+let maxClouds = 10;
+let maxBirds = 3;
 
-      <div class="events-container" id="events-container">
-        <h1>Upcoming Events</h1>
-        <div class="filter-container">
-          <input type="text" id="events-filter" class="events-filter" placeholder="Search events">
-        </div>
-        <div class="events-box" style="overflow-y:scroll;" id="events-box">
-          <div class="events-list" id="events-list"></div>
-          <div class="events-loader" id="events-loader">
-            <div class="circle"></div>
-            <div class="circle"></div>
-            <div class="circle"></div>
-          </div>
-        </div>
-      </div>
+//ANIMATION STARTER FUNCTIONS
 
-    <!--BOX WITH GAMES-->
+function fillAnimationArrays() {
+  fillCloudsArray(animationCanvas, cloudsArray1);
+  fillBirdsArray(animationCanvas, birdsArray1);
+}
+fillAnimationArrays();
 
-      <div class="gameBox" id="gameBox">
-        <h1>Games</h1>
-        <div class="gameBox1" id="gameBox1">
-      <div class="gameInfo" id="game1info">
-        <h2>Intergalactic hailstorm</h2>
-        <p>While under attack by evil aliens, Luke gets caught in an intergalactic hailstorm! Help him collect stars and be sure to keep him fueled up.</p>
-        </div>
-        
-        <div class="game" id="game1">
-          <button type="button" id="show-controls1" class="show-controls hide-btn">SHOW CONTROLS</button>
-          <div id="controls1" class="controls-box hide-controls">
+function drawAnimation() {
+  emptyCanvas(ctxAnimation, animationCanvas);
+  drawArrayOnCanvas(ctxAnimation, cloudsArray1);
+  drawArrayOnCanvas(ctxAnimation, birdsArray1);
+}
 
-          <button type="button" class="left-control controls">⇦ <br><p>left</p></button>
-          <button type="button" class="right-control controls">⇨ <br><p>right</p></button>
-          <button type="button" class="up-control controls">⇧ <br><p>up</p></button>
-          <button type="button" class="down-control controls">⇩ <br><p>down</p></button>
-        </div>
-          <button type="submit" id="playGame1" class="playGame">Play game</button>
-          <canvas height="150" width="300" class="theGame hide-game" id="theGame1">
-          </canvas>
-          <div id="start-game1" class="start-game hide-screen">
-            <button type="button" id="start-btn1" class="start-btn">START GAME</button>
-          </div>
-          <div id="bonus-round1" class="bonus-round hide-screen">
-            <p class="bonusround-text">BONUS ROUND</p>
-            <img src="flames.png" alt="FLAMES">
-          </div>
-          <div id="game-over1" class="game-over hide-screen">
-            <p class="gameover-text">GAME OVER</p>
-            <p>PLAY AGAIN?</p>
-            <button type="button" class="play-yes play-again">YES</button>
-            <button type="button" class="play-no play-again">NO</button>
-          </div>
-        </div>
-        </div>
-        <div class="gameBox2" id="gameBox2">
-      <div class="gameInfo" id="game2info">
-        <h2>Space travel</h2>
-        <p>During his space travel, Luke encounters rogue aliens who wish to stop him from visiting the Earthlings. Eliminate them to secure safe passage.</p>
-        </div>
-        
-        <div class="game" id="game2">
-          <button type="button" id="show-controls2" class="show-controls hide-btn">SHOW CONTROLS</button>
-          <div id="controls2" class="controls-box hide-controls">
-            <button type="button" class="left-control controls">⇦ <br><p>left</p></button>
-            <button type="button" class="right-control controls">⇨ <br><p>right</p></button>
-            <button type="button" class="up-control controls">⇧ <br><p>up</p></button>
-            <button type="button" class="down-control controls">⇩ <br><p>down</p></button>
-            <button type="button" class="f-control controls">F <br><p>fire</p></button>
-          </div>
-          <button type="submit" id="playGame2" class="playGame">Play game</button>
-          
-          <canvas height="150" width="300" class="theGame hide-game" id="theGame2">
-          </canvas>
-          <div id="start-game2" class="start-game hide-screen">
-            <button type="button" id="start-btn2" class="start-btn">START GAME</button>
-          </div>
-          <div id="bonus-round2" class="bonus-round hide-screen">
-            <p class="bonusround-text">BONUS ROUND</p>
-            <img src="flames.png" alt="FLAMES">
-          </div>
-          <div id="game-over2" class="game-over hide-screen">
-            <p class="gameover-text">GAME OVER</p>
-            <p>PLAY AGAIN?</p>
-            <button type="button" class="play-yes play-again">YES</button>
-            <button type="button" class="play-no play-again">NO</button>
-          </div>
-        </div>
-      </div>
-        <div class="gameBox3" id="gameBox3">
-      <div class="gameInfo" id="game3info">
-        <h2>Cowboys & Aliens</h2>
-        <p>Evil cowboys are trying to shoot Luke down! Help him with his landing on planet Earth. <br> Only with his safe landing, peace will come. </p>
-        </div>
-        
-        <div class="game" id="game3">
-          <button type="button" id="show-controls3" class="show-controls hide-btn">SHOW CONTROLS</button>
-          <div id="controls3" class="controls-box hide-controls">
-            <button type="button" class="left-control controls">⇦ <br><p>left</p></button>
-            <button type="button" class="right-control controls">⇨ <br><p>right</p></button>
-            <button type="button" class="up-control controls">⇧ <br><p>up</p></button>
-            <button type="button" class="down-control controls">⇩ <br><p>down</p></button>
-          </div>
-          <button type="submit" id="playGame3" class="playGame">Play game</button>
-          
-          <canvas class="theGame hide-game" id="theGame3">
-          </canvas>
-          <div id="start-game3" class="start-game hide-screen">
-            <button type="button" id="start-btn3" class="start-btn">START GAME</button>
-          </div>
-          <div id="bonus-round3" class="bonus-round hide-screen">
-            <p class="bonusround-text">BONUS ROUND</p>
-            <img src="flames.png" alt="FLAMES">
-          </div>
-          <div id="game-over3" class="game-over hide-screen">
-            <p class="gameover-text">GAME OVER</p>
-            <p>PLAY AGAIN?</p>
-            <button type="button" class="play-yes play-again">YES</button>
-            <button type="button" class="play-no play-again">NO</button>
-          </div>
-        </div>
-      </div>
-      </div>
+function animationAction() {
+  drawAnimation();
+  moveCloudsArray(animationCanvas, cloudsArray1);
+  moveBirdsArray(animationCanvas, birdsArray1);
+  requestIdAnimation = requestAnimationFrame(animationAction);
+}
+animationAction();
 
-      <!--FOOTER-->
+// GAME OBJECTS
 
-    <div class="footer" id="footer">
-      <div class="footer-textbox" id="foot-texts">
-          <div class="link">
-            <a href="#/" id="contact">Contact</a>
-          </div>
-          <div class="foot-text hide-text" id="contact-text">
-          <p>
-            Feel free to contact us anytime, we will get back to you asap.
-            <br />
-            <br />
-            <p class="email">email: greetings@alien.com</p>
-          </p>
-        </div>
-        <div class="link"><a href="#/" id="register">Register</a></div>
-        <div class="foot-text hide-text" id="register-text">
-          <p><li class="openReg3" id="openReg3"><strong>Register</strong></li> with us for your weekly dosage of alien.</p>
-        </div>
-        <div class="link"><a href="#/" id="faq">Faq</a></div>
-        <div class="foot-text hide-text" id="faq-text">
-          <p>
-            Visit our FAQ-page to find the answers to all your questions. Feel free to contact us for special inquiries.
-          </p>
-        </div>
-        <div class="link"><a href="#/" id="aboutUs">About us</a></div>
-        <div class="foot-text hide-text" id="aboutUs-text">
-          <p>We come in peace.</p>
-        </div>
-        <div class="link"><a href="#/" id="more">More</a></div>
-        <div class="foot-text hide-text" id="more-text">
-        <p>
-            Visit our other webpages: </br>
-            .... <br>
-            .... <br>
-          </p>
-        </div>
-      </div>
-      </div>
+const gameBox = document.getElementById("game-box");
+const gameCanvas = document.getElementById("game-canvas");
+const ctxGame = gameCanvas.getContext("2d");
+let requestIdGame;
+let cloudsArray2 = [];
+let birdsArray2 = [];
+let treesArray2 = [];
+let smallRocksArray = [];
+let maxTrees = 20;
+maxSmallRocks = 2;
+let dino;
+let necklength = 0;
+let dinoY = 110;
+let dinoTurn = 0;
+let dinoJump = 0;
 
-<hr class="hr-2 hide-ruler" id="hr2">
+//GAME STARTER FUNCTIONS
 
-    <script type="text/javascript" src="script.js"></script>
-    <script type="text/javascript" src="events.json"></script>
-    <script type="text/javascript" src="highscores.json"></script>
-  </body>
-</html>
+function fillGameArrays() {
+  fillTreesArray(gameCanvas, treesArray2);
+  fillCloudsArray(gameCanvas, cloudsArray2);
+  fillBirdsArray(gameCanvas, birdsArray2);
+  fillSmallRocksArray(gameCanvas, smallRocksArray);
+  createDinosaur(ctxGame);
+}
+fillGameArrays();
+
+function drawGame() {
+  emptyCanvas(ctxGame, gameCanvas);
+  drawEarth(ctxGame, gameCanvas);
+  drawArrayOnCanvas(ctxGame, treesArray2);
+  drawArrayOnCanvas(ctxGame, cloudsArray2);
+  drawArrayOnCanvas(ctxGame, birdsArray2);
+  drawArrayOnCanvas(ctxGame, smallRocksArray);
+  drawDinosaur(ctxGame);
+}
+
+function gameAction() {
+  drawGame();
+  moveTreesArray(gameCanvas, treesArray2);
+  moveCloudsArray(gameCanvas, cloudsArray2);
+  moveBirdsArray(gameCanvas, birdsArray2);
+  moveSmallRocksArray(gameCanvas, smallRocksArray);
+  moveDinosaur(gameCanvas);
+  requestIdGame = requestAnimationFrame(gameAction);
+}
+gameAction();
+
+// DRAWING FUNCTIONS
+
+function emptyCanvas(canvasContext, canvasName) {
+  canvasContext.clearRect(0, 0, canvasName.width, canvasName.height);
+}
+
+function drawArrayOnCanvas(canvasContext, arrayType) {
+  for (i = 0; i < arrayType.length; i++) {
+    arrayType[i].draw(canvasContext);
+  }
+}
+
+function drawRoundObject(
+  canvasContext,
+  objectColour,
+  objectX,
+  objectY,
+  radius,
+  startAngle,
+  endAngle,
+  counterClockwise
+) {
+  canvasContext.beginPath();
+  canvasContext.arc(
+    objectX,
+    objectY,
+    radius,
+    startAngle,
+    endAngle,
+    counterClockwise
+  );
+  canvasContext.fillStyle = objectColour;
+  canvasContext.fill();
+  canvasContext.closePath();
+}
+
+function drawEllipseObject(
+  canvasContext,
+  objectColour,
+  objectX,
+  objectY,
+  radiusX,
+  radiusY,
+  rotation,
+  startAngle,
+  endAngle,
+  counterClockwise
+) {
+  canvasContext.beginPath();
+  canvasContext.ellipse(
+    objectX,
+    objectY,
+    radiusX,
+    radiusY,
+    rotation,
+    startAngle,
+    endAngle,
+    counterClockwise
+  );
+  canvasContext.fillStyle = objectColour;
+  canvasContext.fill();
+  canvasContext.closePath();
+}
+
+function drawRectObject(
+  canvasContext,
+  objectColour,
+  objectX,
+  objectY,
+  objectW,
+  objectH
+) {
+  canvasContext.beginPath();
+  canvasContext.rect(objectX, objectY, objectW, objectH);
+  canvasContext.fillStyle = objectColour;
+  canvasContext.fill();
+  canvasContext.closePath();
+}
+
+// BACKGROUND ITEMS
+
+function fillCloudsArray(canvasName, cloudsArray) {
+  for (var i = 0; i < maxClouds; i++) {
+    cloudsArray[i] = new Cloud(canvasName);
+  }
+}
+
+function moveCloudsArray(canvasName, cloudsArray) {
+  for (var i = 0; i < cloudsArray.length; i++) {
+    cloudsArray[i].x += cloudsArray[i].dx * cloudsArray[i].speed;
+    if (cloudsArray[i].x < -20) {
+      cloudsArray[i].reset(canvasName);
+    }
+  }
+}
+
+function fillBirdsArray(canvasName, birdsArray) {
+  for (var i = 0; i < maxBirds; i++) {
+    birdsArray[i] = new Bird(canvasName);
+  }
+}
+
+function moveBirdsArray(canvasName, birdsArray) {
+  for (var i = 0; i < birdsArray.length; i++) {
+    birdsArray[i].x += birdsArray[i].dx;
+    birdsArray[i].y += birdsArray[i].dy;
+    if (birdsArray[i].x < -20) {
+      birdsArray[i].reset(canvasName);
+    }
+  }
+}
+
+function fillDinosaursArray(canvasContext, dinosaursArray) {
+  for (var i = 0; i < maxDinosaurs; i++) {
+    dinosaursArray[i] = new Dinosaur(canvasContext);
+  }
+}
+
+function moveDinosaursArray(canvasName, dinosaursArray) {
+  for (var i = 0; i < dinosaursArray.length; i++) {
+    dinosaursArray[i].x += dinosaursArray[i].dx;
+    if (dinosaursArray[i].x > canvasName.width + 20) {
+      dinosaursArray[i].reset(canvasName);
+    }
+  }
+}
+
+function fillTreesArray(canvasContext, treesArray) {
+  for (var i = 0; i < maxTrees; i++) {
+    treesArray[i] = new Tree(canvasContext);
+  }
+}
+
+function moveTreesArray(canvasName, treesArray) {
+  for (var i = 0; i < treesArray.length; i++) {
+    treesArray[i].x += treesArray[i].dx * treesArray[i].speed;
+    if (treesArray[i].x < -20) {
+      treesArray[i].reset(canvasName);
+    }
+  }
+}
+
+function drawEarth(canvasContext, canvasName) {
+  drawRectObject(
+    canvasContext,
+    "#2d822f",
+    0,
+    canvasName.height - 50,
+    canvasName.width,
+    45
+  );
+  drawRectObject(
+    canvasContext,
+    "#b16100",
+    0,
+    canvasName.height - 4,
+    canvasName.width,
+    4
+  );
+  drawRectObject(
+    canvasContext,
+    "#005e02",
+    0,
+    canvasName.height - 5,
+    canvasName.width,
+    1
+  );
+}
+
+// IN GAME ITEMS
+
+function fillSmallRocksArray(canvasContext, smallRocksArray) {
+  for (var i = 0; i < maxSmallRocks; i++) {
+    smallRocksArray[i] = new SmallRock(canvasContext);
+  }
+}
+
+function moveSmallRocksArray(canvasName, smallRocksArray) {
+  for (var i = 0; i < smallRocksArray.length; i++) {
+    smallRocksArray[i].x += smallRocksArray[i].dx * smallRocksArray[i].speed;
+    if (smallRocksArray[i].x < -20) {
+      smallRocksArray[i].reset(canvasName);
+    }
+  }
+}
+
+// DINOSAUR PLAYER
+
+function createDinosaur(canvasContext) {
+  dino = new Dinosaur(canvasContext);
+}
+
+function drawDinosaur(canvasContext) {
+  dino.draw(canvasContext);
+}
+
+function moveDinosaur(canvasName) {
+  dino.x += dino.dx;
+  dino.y -= dinoJump;
+  dinoTurn += dinoJump;
+  if (dino.x > canvasName.width - 20) {
+    dino.x = canvasName.width - 20;
+  } else if (dino.x < 40) {
+    dino.x = 40;
+  } else if (dinoTurn == 0) {
+    dinoJump = 0;
+  } else if (dinoTurn == 10) {
+    dinoJump = -1;
+  }
+}
+
+function keyDown(e) {
+  if (e.key === "Right" || e.key === "ArrowRight") {
+    dino.dx = dino.speed;
+  } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    dino.dx = -dino.speed;
+  }
+
+  if (e.key === "Up" || e.key === "ArrowUp") {
+    if (necklength < 80) {
+      necklength = necklength + 3;
+    }
+  }
+  if (e.key === "Down" || e.key === "ArrowDown") {
+    if (necklength > 0) {
+      necklength = necklength - 3;
+    }
+  }
+  if (e.code === "Space" || e.code === "32") {
+    if (dinoJump == 0) {
+      dinoJump = 1;
+    }
+  }
+}
+
+function keyUp(e) {
+  if (
+    e.key === "Right" ||
+    e.key === "ArrowRight" ||
+    e.key === "Left" ||
+    e.key === "ArrowLeft"
+  ) {
+    dino.dx = 0;
+  }
+  if (
+    e.key === "Up" ||
+    e.key === "ArrowUp" ||
+    e.key === "Down" ||
+    e.key === "ArrowDown"
+  ) {
+    necklength = necklength;
+  }
+}
+
+document.addEventListener("keydown", keyDown);
+document.addEventListener("keyup", keyUp);
