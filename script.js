@@ -801,6 +801,7 @@ let dinoDown = 0;
 let dinoJump = 0;
 let dinoHighJump = 0;
 let dinoOnRock = 0;
+let dinoOnMediumRock = 0;
 let dinoFall = 0;
 let dinoTurn = 0;
 let dinoTail = 0.5;
@@ -1095,7 +1096,7 @@ function dinoStand() {
   legAngleLeft = 0.05;
 }
 
-function jumpOnRocks(smallRocksArray) {
+function jumpOnSmallRocks(smallRocksArray) {
   for (i = 0; i < smallRocksArray.length; i++) {
     if (
       dino.x < smallRocksArray[i].x + smallRocksArray[i].width / 2 &&
@@ -1111,14 +1112,31 @@ function jumpOnRocks(smallRocksArray) {
   }
 }
 
-function fallOffRocks(smallRocksArray) {
+function jumpOnMediumRocks(mediumRocksArray) {
+  for (i = 0; i < mediumRocksArray.length; i++) {
+    if (
+      dino.x < mediumRocksArray[i].x + mediumRocksArray[i].width / 2 &&
+      dino.x > mediumRocksArray[i].x - mediumRocksArray[i].width / 2 &&
+      dino.y == mediumRocksArray[i].y
+    ) {
+      dino.y = mediumRocksArray[i].y;
+      dinoOnMediumRock = 1;
+      dinoOnRock = 0;
+      dinoDown = 0;
+      dinoJump = 0;
+      dinoHighJump = 0;
+    }
+  }
+}
+
+function fallOffSmallRocks(smallRocksArray) {
   for (i = 0; i < smallRocksArray.length; i++) {
     if (
       (dino.x > smallRocksArray[i].x + smallRocksArray[i].width / 2 ||
         dino.x < smallRocksArray[i].x - smallRocksArray[i].width / 2) &&
       dinoOnRock === 1
     ) {
-      dinoFall = smallRocksArray[i].height;
+      dinoFall = smallRocksArray[i].height - 1;
       for (f = 0; f < dinoFall; f++) {
         dino.y += 1;
       }
@@ -1127,7 +1145,35 @@ function fallOffRocks(smallRocksArray) {
   }
 }
 
-function hitRocks(smallRocksArray) {
+function fallOffMediumRocks(mediumRocksArray, smallRocksArray) {
+  for (i = 0; i < mediumRocksArray.length; i++) {
+    if (
+      (dino.x > mediumRocksArray[i].x + mediumRocksArray[i].width / 2 ||
+        dino.x < mediumRocksArray[i].x - mediumRocksArray[i].width / 2) &&
+      dinoOnMediumRock === 1
+    )
+      for (s = 0; s < smallRocksArray.length; s++)
+        if (
+          dino.x < smallRocksArray[s].x + smallRocksArray[s].width / 2 &&
+          dino.x > smallRocksArray[s].x - smallRocksArray[s].width / 2
+        ) {
+          dinoFall = mediumRocksArray[i].height - smallRocksArray[i].height;
+          for (f = 0; f < dinoFall; f++) {
+            dino.y += 1;
+          }
+          dinoOnMediumRock = 0;
+          dinoOnRock = 1;
+        } else {
+          dinoFall = mediumRocksArray[i].height - 1;
+          for (f = 0; f < dinoFall; f++) {
+            dino.y += 1;
+          }
+          dinoOnMediumRock = 0;
+        }
+  }
+}
+
+function hitSmallRocks(smallRocksArray) {
   for (i = 0; i < smallRocksArray.length; i++) {
     if (
       dino.x + 18 > smallRocksArray[i].x - smallRocksArray[i].width / 2 &&
@@ -1145,25 +1191,25 @@ function hitRocks(smallRocksArray) {
   }
 }
 
-function hitRocks(smallRocksArray) {
-  for (i = 0; i < smallRocksArray.length; i++) {
+function hitMediumRocks(mediumRocksArray) {
+  for (i = 0; i < mediumRocksArray.length; i++) {
     if (
-      dino.x + 18 > smallRocksArray[i].x - smallRocksArray[i].width / 2 &&
-      dino.x + 18 < smallRocksArray[i].x + smallRocksArray[i].width / 2 &&
-      dino.y > smallRocksArray[i].y + 4
+      dino.x + 18 > mediumRocksArray[i].x - mediumRocksArray[i].width / 2 &&
+      dino.x + 18 < mediumRocksArray[i].x + mediumRocksArray[i].width / 2 &&
+      dino.y > mediumRocksArray[i].y + 4
     ) {
-      dino.x = smallRocksArray[i].x - smallRocksArray[i].width / 2 - 20;
+      dino.x = mediumRocksArray[i].x - mediumRocksArray[i].width / 2 - 20;
     } else if (
-      dino.x - 18 > smallRocksArray[i].x - smallRocksArray[i].width / 2 &&
-      dino.x - 18 < smallRocksArray[i].x + smallRocksArray[i].width / 2 &&
-      dino.y > smallRocksArray[i].y + 4
+      dino.x - 18 > mediumRocksArray[i].x - mediumRocksArray[i].width / 2 &&
+      dino.x - 18 < mediumRocksArray[i].x + mediumRocksArray[i].width / 2 &&
+      dino.y > mediumRocksArray[i].y + 4
     ) {
-      dino.x = smallRocksArray[i].x + smallRocksArray[i].width / 2 + 20;
+      dino.x = mediumRocksArray[i].x + mediumRocksArray[i].width / 2 + 20;
     }
   }
 }
 
-function moveDinosaur(canvasName, smallRocksArray) {
+function moveDinosaur(canvasName, smallRocksArray, mediumRocksArray) {
   dino.x += dino.dx;
   if (dino.x > canvasName.width - 40) {
     dino.x = canvasName.width - 40;
@@ -1183,9 +1229,12 @@ function moveDinosaur(canvasName, smallRocksArray) {
   }
   moveDinoTail();
   moveDinoLegs();
-  jumpOnRocks(smallRocksArray);
-  fallOffRocks(smallRocksArray);
-  hitRocks(smallRocksArray);
+  jumpOnSmallRocks(smallRocksArray);
+  jumpOnMediumRocks(mediumRocksArray);
+  fallOffSmallRocks(smallRocksArray);
+  fallOffMediumRocks(mediumRocksArray, smallRocksArray);
+  hitSmallRocks(smallRocksArray);
+  hitMediumRocks(mediumRocksArray);
 }
 
 //GAME STARTER FUNCTIONS
@@ -1217,7 +1266,7 @@ function gameAction() {
   moveCloudsArray(gameCanvas, cloudsArray1);
   moveBirdsArray(gameCanvas, birdsArray1);
   //moveSmallRocksArray(gameCanvas, smallRocksArray1);
-  moveDinosaur(gameCanvas, smallRocksArray1);
+  moveDinosaur(gameCanvas, smallRocksArray1, mediumRocksArray1);
   requestIdGame = requestAnimationFrame(gameAction);
 }
 gameAction();
