@@ -50,13 +50,14 @@ class Cloud {
 class Bird {
   constructor(canvasName) {
     this.x = canvasName.width + (Math.random() * 300 + 20);
-    this.y = Math.random() * 40 + 20;
+    this.y = Math.random() * 30 + 20;
     this.dx = -1;
-    this.dy = 0;
+    this.dy = birdMovement;
     this.speed = 1;
     this.size = 3;
 
     this.draw = function (canvasContext) {
+      //tail
       drawEllipseObject(
         canvasContext,
         "#000000",
@@ -81,6 +82,7 @@ class Bird {
         Math.PI * 2,
         true
       );
+      //left wing
       drawEllipseObject(
         canvasContext,
         "#000000",
@@ -88,29 +90,31 @@ class Bird {
         this.y - 4,
         this.size * 2,
         2,
-        0.7,
+        leftWing,
         0,
         Math.PI * 2,
         true
       );
+      //right wing
       drawEllipseObject(
         canvasContext,
         "#000000",
-        this.x + 6,
-        this.y + 3,
-        this.size * 2,
+        this.x + 5,
+        this.y + 2,
+        this.size * 3,
         2,
-        3.4,
+        rightWing,
         0,
         Math.PI * 2,
         true
       );
+      //head
       drawEllipseObject(
         canvasContext,
         "#000000",
-        this.x - 5,
+        this.x - 4,
         this.y + 3,
-        this.size * 0.5,
+        this.size,
         2,
         0,
         0,
@@ -132,15 +136,15 @@ class Bird {
     };
 
     this.reset = function (canvasName) {
-      this.x = canvasName.width + (Math.random() * 100 + 20);
-      this.y = Math.random() * 40 + 20;
+      this.x = canvasName.width + (Math.random() * 200 + 20);
+      this.y = Math.random() * 30 + 20;
     };
   }
 }
 
 class Dinosaur {
   constructor() {
-    this.x = 100;
+    this.x = 20;
     this.y = dinoY;
     this.dx = 0;
     this.dy = 0;
@@ -148,14 +152,15 @@ class Dinosaur {
     this.size = 5;
 
     this.draw = function (canvasContext) {
+      //tail
       drawEllipseObject(
         canvasContext,
         "#00ad37",
-        this.x - 32,
-        this.y + 27,
+        this.x - 16,
+        this.y - 9,
         this.size * 0.5,
         9,
-        0.5,
+        dinoTail,
         0,
         Math.PI * 2,
         true
@@ -163,23 +168,24 @@ class Dinosaur {
       drawEllipseObject(
         canvasContext,
         "#00b439",
-        this.x - 31,
-        this.y + 25,
+        this.x - 15,
+        this.y - 10,
         this.size * 0.4,
         9,
-        0.55,
+        dinoTail,
         0,
         Math.PI * 2,
         true
       );
+      //legs
       drawEllipseObject(
         canvasContext,
         "#00b439",
-        this.x - 26,
-        this.y + 27,
+        this.x - 11,
+        this.y - 8,
         this.size * 0.7,
-        9,
-        0,
+        dinoLegRight,
+        dinoRightLegAngle,
         0,
         Math.PI * 2,
         true
@@ -187,11 +193,11 @@ class Dinosaur {
       drawEllipseObject(
         canvasContext,
         "#00ad37",
-        this.x - 19,
-        this.y + 27,
+        this.x - 4,
+        this.y - 8,
         this.size * 0.7,
-        9,
-        0,
+        dinoLegLeft,
+        dinoLeftLegAngle,
         0,
         Math.PI * 2,
         true
@@ -199,11 +205,11 @@ class Dinosaur {
       drawEllipseObject(
         canvasContext,
         "#00b439",
-        this.x - 9,
-        this.y + 27,
+        this.x + 6,
+        this.y - 8,
         this.size * 0.7,
-        9,
-        0,
+        dinoLegRight,
+        dinoRightLegAngle,
         0,
         Math.PI * 2,
         true
@@ -211,30 +217,32 @@ class Dinosaur {
       drawEllipseObject(
         canvasContext,
         "#00ad37",
-        this.x - 2,
-        this.y + 27,
+        this.x + 13,
+        this.y - 8,
         this.size * 0.7,
-        9,
-        0,
+        dinoLegLeft,
+        dinoLeftLegAngle,
         0,
         Math.PI * 2,
         true
       );
+      //neck
       drawRectObject(
         canvasContext,
         "#00ad37",
-        this.x - 7.5,
-        this.y + 25,
+        this.x + 7.5,
+        this.y - 10,
         this.size * 1.8,
         -25 - necklength
       );
+      //body
       drawEllipseObject(
         canvasContext,
         "#00ad37",
-        this.x - 15,
-        this.y + 22,
+        this.x,
+        this.y - 13,
         this.size * 3,
-        9,
+        7,
         0,
         0,
         Math.PI * 2,
@@ -243,28 +251,30 @@ class Dinosaur {
       drawEllipseObject(
         canvasContext,
         "#00b439",
-        this.x - 14.5,
-        this.y + 22.8,
+        this.x + 0.5,
+        this.y - 12.2,
         this.size * 3,
-        9,
+        7,
         0,
         0,
         Math.PI * 2,
         true
       );
+      //neck
       drawRectObject(
         canvasContext,
         "#00b439",
-        this.x - 5.5,
-        this.y + 25,
+        this.x + 9.5,
+        this.y - 10,
         this.size * 1.2,
         -25 - necklength
       );
+      //ears
       drawEllipseObject(
         canvasContext,
         "#00b439",
-        this.x - 5,
-        this.y - 4 - necklength,
+        this.x + 10,
+        this.y - 39 - necklength,
         this.size * 0.4,
         2,
         0,
@@ -275,8 +285,8 @@ class Dinosaur {
       drawEllipseObject(
         canvasContext,
         "#00ad37",
-        this.x + 2,
-        this.y - 4 - necklength,
+        this.x + 17,
+        this.y - 40 - necklength,
         this.size * 0.4,
         2,
         0,
@@ -284,11 +294,12 @@ class Dinosaur {
         Math.PI * 2,
         true
       );
+      //head
       drawEllipseObject(
         canvasContext,
         "#00b439",
-        this.x + 2,
-        this.y + 1 - necklength,
+        this.x + 17.8,
+        this.y - 35 - necklength,
         this.size * 2,
         5,
         0,
@@ -296,11 +307,12 @@ class Dinosaur {
         Math.PI * 2,
         true
       );
+      //face
       drawEllipseObject(
         canvasContext,
         "#000000",
-        this.x,
-        this.y - necklength,
+        this.x + 15,
+        this.y - 35 - necklength,
         this.size * 0.4,
         1.5,
         0,
@@ -311,8 +323,8 @@ class Dinosaur {
       drawEllipseObject(
         canvasContext,
         "#ffffff",
-        this.x - 0.5,
-        this.y - 1 - necklength,
+        this.x + 14.5,
+        this.y - 36 - necklength,
         this.size * 0.2,
         1,
         0,
@@ -323,8 +335,8 @@ class Dinosaur {
       drawEllipseObject(
         canvasContext,
         "#000000",
-        this.x + 8.5,
-        this.y + 1.5 - necklength,
+        this.x + 23.5,
+        this.y - 33.5 - necklength,
         this.size * 0.1,
         0.4,
         0,
@@ -335,8 +347,215 @@ class Dinosaur {
       drawEllipseObject(
         canvasContext,
         "#000000",
-        this.x + 10.5,
-        this.y + 1.5 - necklength,
+        this.x + 25.5,
+        this.y - 33.5 - necklength,
+        this.size * 0.1,
+        0.4,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+    };
+
+    this.turn = function (canvasContext) {
+      //tail
+      drawEllipseObject(
+        canvasContext,
+        "#00ad37",
+        this.x + 16,
+        this.y - 9,
+        this.size * 0.5,
+        9,
+        dinoTail + 2,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00b439",
+        this.x + 15,
+        this.y - 10,
+        this.size * 0.4,
+        9,
+        dinoTail + 2,
+        0,
+        Math.PI * 2,
+        true
+      );
+      //legs
+      drawEllipseObject(
+        canvasContext,
+        "#00b439",
+        this.x + 11,
+        this.y - 8,
+        this.size * 0.7,
+        dinoLegRight,
+        dinoRightLegAngle,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00ad37",
+        this.x + 4,
+        this.y - 8,
+        this.size * 0.7,
+        dinoLegLeft,
+        dinoLeftLegAngle,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00b439",
+        this.x - 6,
+        this.y - 8,
+        this.size * 0.7,
+        dinoLegRight,
+        dinoRightLegAngle,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00ad37",
+        this.x - 13,
+        this.y - 8,
+        this.size * 0.7,
+        dinoLegLeft,
+        dinoLeftLegAngle,
+        0,
+        Math.PI * 2,
+        true
+      );
+      //neck
+      drawRectObject(
+        canvasContext,
+        "#00ad37",
+        this.x - 16.5,
+        this.y - 10,
+        this.size * 1.8,
+        -25 - necklength
+      );
+      //body
+      drawEllipseObject(
+        canvasContext,
+        "#00ad37",
+        this.x,
+        this.y - 13,
+        this.size * 3,
+        7,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00b439",
+        this.x - 0.5,
+        this.y - 12.2,
+        this.size * 3,
+        7,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      //neck
+      drawRectObject(
+        canvasContext,
+        "#00b439",
+        this.x - 14.5,
+        this.y - 10,
+        this.size * 1.2,
+        -25 - necklength
+      );
+      //ears
+      drawEllipseObject(
+        canvasContext,
+        "#00b439",
+        this.x - 10,
+        this.y - 39 - necklength,
+        this.size * 0.4,
+        2,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#00ad37",
+        this.x - 17,
+        this.y - 40 - necklength,
+        this.size * 0.4,
+        2,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      //head
+      drawEllipseObject(
+        canvasContext,
+        "#00b439",
+        this.x - 17.8,
+        this.y - 35 - necklength,
+        this.size * 2,
+        5,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      //face
+      drawEllipseObject(
+        canvasContext,
+        "#000000",
+        this.x - 15,
+        this.y - 35 - necklength,
+        this.size * 0.4,
+        1.5,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#ffffff",
+        this.x - 14.5,
+        this.y - 36 - necklength,
+        this.size * 0.2,
+        1,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#000000",
+        this.x - 23.5,
+        this.y - 33.5 - necklength,
+        this.size * 0.1,
+        0.4,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#000000",
+        this.x - 25.5,
+        this.y - 33.5 - necklength,
         this.size * 0.1,
         0.4,
         0,
@@ -469,29 +688,31 @@ class Tree {
 
 class SmallRock {
   constructor(canvasName) {
-    this.x = 150;
-    this.y = canvasName.height - 5;
-    this.dx = 0;
+    this.x = 100;
+    this.y = 140;
+    this.dx = -1;
     this.dy = 0;
     this.speed = 0;
     this.size = 1;
+    this.height = 6;
+    this.width = 40;
 
     this.draw = function (canvasContext) {
       drawRectObject(
         canvasContext,
         "#b16100",
-        this.x,
-        canvasName.height - 10,
-        40,
-        10
+        this.x - this.width / 2,
+        this.y,
+        this.width,
+        this.height
       );
       drawEllipseObject(
         canvasContext,
         "#005e02",
-        this.x + 20,
-        canvasName.height - 10,
-        20,
-        1,
+        this.x,
+        this.y,
+        this.width / 2,
+        this.height * 0.1,
         0,
         0,
         Math.PI * 2,
@@ -500,45 +721,52 @@ class SmallRock {
     };
 
     this.reset = function () {
-      this.x = 50;
-      this.y = canvasName.height - 5;
+      this.x = canvasName.width + (Math.random() * 200 + 20);
+      this.y = 140;
     };
   }
 }
 
-// ANIMATION OBJECTS
+class MediumRock {
+  constructor(canvasName) {
+    this.x = 140;
+    this.y = 131;
+    this.dx = -1;
+    this.dy = 0;
+    this.speed = 0;
+    this.size = 1;
+    this.height = 15;
+    this.width = 40;
 
-const animationBox = document.getElementById("animation-box");
-const animationCanvas = document.getElementById("animation-canvas");
-const ctxAnimation = animationCanvas.getContext("2d");
-let requestIdAnimation;
-let cloudsArray1 = [];
-let dinosaursArray1 = [];
-let birdsArray1 = [];
-let maxClouds = 10;
-let maxBirds = 3;
+    this.draw = function (canvasContext) {
+      drawRectObject(
+        canvasContext,
+        "#b16100",
+        this.x - this.width / 2,
+        this.y,
+        this.width,
+        this.height
+      );
+      drawEllipseObject(
+        canvasContext,
+        "#005e02",
+        this.x,
+        this.y,
+        this.width / 2,
+        this.height * 0.1,
+        0,
+        0,
+        Math.PI * 2,
+        true
+      );
+    };
 
-//ANIMATION STARTER FUNCTIONS
-
-function fillAnimationArrays() {
-  fillCloudsArray(animationCanvas, cloudsArray1);
-  fillBirdsArray(animationCanvas, birdsArray1);
+    this.reset = function () {
+      this.x = canvasName.width + (Math.random() * 200 + 20);
+      this.y = 140;
+    };
+  }
 }
-fillAnimationArrays();
-
-function drawAnimation() {
-  emptyCanvas(ctxAnimation, animationCanvas);
-  drawArrayOnCanvas(ctxAnimation, cloudsArray1);
-  drawArrayOnCanvas(ctxAnimation, birdsArray1);
-}
-
-function animationAction() {
-  drawAnimation();
-  moveCloudsArray(animationCanvas, cloudsArray1);
-  moveBirdsArray(animationCanvas, birdsArray1);
-  requestIdAnimation = requestAnimationFrame(animationAction);
-}
-animationAction();
 
 // GAME OBJECTS
 
@@ -546,49 +774,46 @@ const gameBox = document.getElementById("game-box");
 const gameCanvas = document.getElementById("game-canvas");
 const ctxGame = gameCanvas.getContext("2d");
 let requestIdGame;
-let cloudsArray2 = [];
-let birdsArray2 = [];
-let treesArray2 = [];
-let smallRocksArray = [];
+let cloudsArray1 = [];
+let maxClouds = 10;
+let birdsArray1 = [];
+let maxBirds = 3;
+let treesArray1 = [];
 let maxTrees = 20;
-maxSmallRocks = 2;
+let smallRocksArray1 = [];
+let maxSmallRocks = 1;
+let mediumRocksArray1 = [];
+let maxMediumRocks = 1;
+
+//BIRD
+let leftWing = 0.7;
+let rightWing = 3.4;
+let wingMovementLeft = 0;
+let wingMovementRight = 0;
+let birdMovement = 0.08;
+let birdDirection = 0;
+
+//DINOSAUR
 let dino;
 let necklength = 0;
-let dinoY = 110;
-let dinoTurn = 0;
+let dinoY = 145;
+let dinoDown = 0;
 let dinoJump = 0;
-
-//GAME STARTER FUNCTIONS
-
-function fillGameArrays() {
-  fillTreesArray(gameCanvas, treesArray2);
-  fillCloudsArray(gameCanvas, cloudsArray2);
-  fillBirdsArray(gameCanvas, birdsArray2);
-  fillSmallRocksArray(gameCanvas, smallRocksArray);
-  createDinosaur(ctxGame);
-}
-fillGameArrays();
-
-function drawGame() {
-  emptyCanvas(ctxGame, gameCanvas);
-  drawEarth(ctxGame, gameCanvas);
-  drawArrayOnCanvas(ctxGame, treesArray2);
-  drawArrayOnCanvas(ctxGame, cloudsArray2);
-  drawArrayOnCanvas(ctxGame, birdsArray2);
-  drawArrayOnCanvas(ctxGame, smallRocksArray);
-  drawDinosaur(ctxGame);
-}
-
-function gameAction() {
-  drawGame();
-  moveTreesArray(gameCanvas, treesArray2);
-  moveCloudsArray(gameCanvas, cloudsArray2);
-  moveBirdsArray(gameCanvas, birdsArray2);
-  moveSmallRocksArray(gameCanvas, smallRocksArray);
-  moveDinosaur(gameCanvas);
-  requestIdGame = requestAnimationFrame(gameAction);
-}
-gameAction();
+let dinoHighJump = 0;
+let dinoOnRock = 0;
+let dinoFall = 0;
+let dinoTurn = 0;
+let dinoTail = 0.5;
+let tailMovement = 0;
+let dinoLegLeft = 9;
+let dinoLegRight = 9;
+let legMovementRight = 0;
+let legMovementLeft = 0;
+let walking = 0;
+let dinoRightLegAngle = 3.1;
+let dinoLeftLegAngle = 3.1;
+let legAngleRight = -0.05;
+let legAngleLeft = 0.05;
 
 // DRAWING FUNCTIONS
 
@@ -669,69 +894,6 @@ function drawRectObject(
   canvasContext.closePath();
 }
 
-// BACKGROUND ITEMS
-
-function fillCloudsArray(canvasName, cloudsArray) {
-  for (var i = 0; i < maxClouds; i++) {
-    cloudsArray[i] = new Cloud(canvasName);
-  }
-}
-
-function moveCloudsArray(canvasName, cloudsArray) {
-  for (var i = 0; i < cloudsArray.length; i++) {
-    cloudsArray[i].x += cloudsArray[i].dx * cloudsArray[i].speed;
-    if (cloudsArray[i].x < -20) {
-      cloudsArray[i].reset(canvasName);
-    }
-  }
-}
-
-function fillBirdsArray(canvasName, birdsArray) {
-  for (var i = 0; i < maxBirds; i++) {
-    birdsArray[i] = new Bird(canvasName);
-  }
-}
-
-function moveBirdsArray(canvasName, birdsArray) {
-  for (var i = 0; i < birdsArray.length; i++) {
-    birdsArray[i].x += birdsArray[i].dx;
-    birdsArray[i].y += birdsArray[i].dy;
-    if (birdsArray[i].x < -20) {
-      birdsArray[i].reset(canvasName);
-    }
-  }
-}
-
-function fillDinosaursArray(canvasContext, dinosaursArray) {
-  for (var i = 0; i < maxDinosaurs; i++) {
-    dinosaursArray[i] = new Dinosaur(canvasContext);
-  }
-}
-
-function moveDinosaursArray(canvasName, dinosaursArray) {
-  for (var i = 0; i < dinosaursArray.length; i++) {
-    dinosaursArray[i].x += dinosaursArray[i].dx;
-    if (dinosaursArray[i].x > canvasName.width + 20) {
-      dinosaursArray[i].reset(canvasName);
-    }
-  }
-}
-
-function fillTreesArray(canvasContext, treesArray) {
-  for (var i = 0; i < maxTrees; i++) {
-    treesArray[i] = new Tree(canvasContext);
-  }
-}
-
-function moveTreesArray(canvasName, treesArray) {
-  for (var i = 0; i < treesArray.length; i++) {
-    treesArray[i].x += treesArray[i].dx * treesArray[i].speed;
-    if (treesArray[i].x < -20) {
-      treesArray[i].reset(canvasName);
-    }
-  }
-}
-
 function drawEarth(canvasContext, canvasName) {
   drawRectObject(
     canvasContext,
@@ -759,6 +921,72 @@ function drawEarth(canvasContext, canvasName) {
   );
 }
 
+// BACKGROUND ITEMS
+
+function fillCloudsArray(canvasName, cloudsArray) {
+  for (var i = 0; i < maxClouds; i++) {
+    cloudsArray[i] = new Cloud(canvasName);
+  }
+}
+
+function moveCloudsArray(canvasName, cloudsArray) {
+  for (var i = 0; i < cloudsArray.length; i++) {
+    cloudsArray[i].x += cloudsArray[i].dx * cloudsArray[i].speed;
+    if (cloudsArray[i].x < -20) {
+      cloudsArray[i].reset(canvasName);
+    }
+  }
+}
+
+function fillBirdsArray(canvasName, birdsArray) {
+  for (var i = 0; i < maxBirds; i++) {
+    birdsArray[i] = new Bird(canvasName);
+  }
+}
+
+function moveBirdsArray(canvasName, birdsArray) {
+  for (var i = 0; i < birdsArray.length; i++) {
+    birdsArray[i].x += birdsArray[i].dx;
+    birdsArray[i].y += birdMovement;
+
+    if (birdsArray[i].x < -20) {
+      birdsArray[i].reset(canvasName);
+    }
+
+    birdDirection += birdMovement;
+    if (birdDirection > 80) {
+      birdMovement = -0.08;
+    } else if (birdDirection < 0) {
+      birdMovement = 0.08;
+    }
+  }
+  leftWing += wingMovementLeft;
+  rightWing += wingMovementRight;
+
+  if (rightWing === 3.4) {
+    wingMovementRight = -0.01;
+    wingMovementLeft = 0.01;
+  } else if (rightWing < 3.0) {
+    wingMovementRight = 0.01;
+    wingMovementLeft = -0.01;
+  }
+}
+
+function fillTreesArray(canvasContext, treesArray) {
+  for (var i = 0; i < maxTrees; i++) {
+    treesArray[i] = new Tree(canvasContext);
+  }
+}
+
+function moveTreesArray(canvasName, treesArray) {
+  for (var i = 0; i < treesArray.length; i++) {
+    treesArray[i].x += treesArray[i].dx * treesArray[i].speed;
+    if (treesArray[i].x < -20) {
+      treesArray[i].reset(canvasName);
+    }
+  }
+}
+
 // IN GAME ITEMS
 
 function fillSmallRocksArray(canvasContext, smallRocksArray) {
@@ -769,9 +997,24 @@ function fillSmallRocksArray(canvasContext, smallRocksArray) {
 
 function moveSmallRocksArray(canvasName, smallRocksArray) {
   for (var i = 0; i < smallRocksArray.length; i++) {
-    smallRocksArray[i].x += smallRocksArray[i].dx * smallRocksArray[i].speed;
-    if (smallRocksArray[i].x < -20) {
+    smallRocksArray[i].x += smallRocksArray[i].dx;
+    if (smallRocksArray[i].x < -60) {
       smallRocksArray[i].reset(canvasName);
+    }
+  }
+}
+
+function fillMediumRocksArray(canvasContext, mediumRocksArray) {
+  for (var i = 0; i < maxMediumRocks; i++) {
+    mediumRocksArray[i] = new MediumRock(canvasContext);
+  }
+}
+
+function moveMediumRocksArray(canvasName, mediumRocksArray) {
+  for (var i = 0; i < mediumRocksArray.length; i++) {
+    mediumRocksArray[i].x += mediumRocksArray[i].dx;
+    if (mediumRocksArray[i].x < -60) {
+      mediumRocksArray[i].reset(canvasName);
     }
   }
 }
@@ -783,29 +1026,211 @@ function createDinosaur(canvasContext) {
 }
 
 function drawDinosaur(canvasContext) {
-  dino.draw(canvasContext);
-}
-
-function moveDinosaur(canvasName) {
-  dino.x += dino.dx;
-  dino.y -= dinoJump;
-  dinoTurn += dinoJump;
-  if (dino.x > canvasName.width - 20) {
-    dino.x = canvasName.width - 20;
-  } else if (dino.x < 40) {
-    dino.x = 40;
-  } else if (dinoTurn == 0) {
-    dinoJump = 0;
-  } else if (dinoTurn == 10) {
-    dinoJump = -1;
+  if (dinoTurn === 0) {
+    dino.draw(canvasContext);
+  } else if (dinoTurn === 1) {
+    dino.turn(canvasContext);
   }
 }
 
+function moveDinoTail() {
+  dinoTail += tailMovement;
+  if (dinoTail === 0.5) {
+    tailMovement = 0.005;
+  } else if (dinoTail > 0.7) {
+    tailMovement = -0.005;
+  }
+}
+
+function moveDinoLegs() {
+  if (walking === 1) {
+    dinoRightLegAngle += legAngleRight;
+    dinoLeftLegAngle += legAngleLeft;
+
+    if (dinoRightLegAngle < 2.9) {
+      legAngleRight = 0.05;
+    } else if (dinoRightLegAngle > 3.4) {
+      legAngleRight = -0.05;
+    }
+
+    if (dinoLeftLegAngle < 2.9) {
+      legAngleLeft = 0.05;
+    } else if (dinoLeftLegAngle > 3.4) {
+      legAngleLeft = -0.05;
+    }
+  } else {
+    dinoStand();
+  }
+}
+
+function dinoTrample() {
+  if (walking === 1) {
+    dinoLegLeft += legMovementLeft;
+    dinoLegRight += legMovementRight;
+
+    if (dinoLegRight === 9) {
+      legMovementRight = -0.5;
+      if (dinoLegLeft < 6) {
+        legMovementLeft = 0.5;
+      } else {
+        legMovementLeft = 0;
+      }
+    } else if (dinoLegRight < 6) {
+      legMovementRight = 0.5;
+      legMovementLeft = -0.5;
+    }
+  } else {
+    dinoStand();
+  }
+}
+
+function dinoStand() {
+  dinoLegLeft = 9;
+  dinoLegRight = 9;
+  legMovementLeft = 0;
+  legMovementRight = 0;
+  dinoRightLegAngle = 3.1;
+  dinoLeftLegAngle = 3.1;
+  legAngleRight = -0.05;
+  legAngleLeft = 0.05;
+}
+
+function jumpOnRocks(smallRocksArray) {
+  for (i = 0; i < smallRocksArray.length; i++) {
+    if (
+      dino.x < smallRocksArray[i].x + smallRocksArray[i].width / 2 &&
+      dino.x > smallRocksArray[i].x - smallRocksArray[i].width / 2 &&
+      dino.y == smallRocksArray[i].y
+    ) {
+      dino.y = smallRocksArray[i].y;
+      dinoOnRock = 1;
+      dinoDown = 0;
+      dinoJump = 0;
+      dinoHighJump = 0;
+    }
+  }
+}
+
+function fallOffRocks(smallRocksArray) {
+  for (i = 0; i < smallRocksArray.length; i++) {
+    if (
+      (dino.x > smallRocksArray[i].x + smallRocksArray[i].width / 2 ||
+        dino.x < smallRocksArray[i].x - smallRocksArray[i].width / 2) &&
+      dinoOnRock === 1
+    ) {
+      dinoFall = smallRocksArray[i].height;
+      for (f = 0; f < dinoFall; f++) {
+        dino.y += 1;
+      }
+      dinoOnRock = 0;
+    }
+  }
+}
+
+function hitRocks(smallRocksArray) {
+  for (i = 0; i < smallRocksArray.length; i++) {
+    if (
+      dino.x + 18 > smallRocksArray[i].x - smallRocksArray[i].width / 2 &&
+      dino.x + 18 < smallRocksArray[i].x + smallRocksArray[i].width / 2 &&
+      dino.y > smallRocksArray[i].y + 4
+    ) {
+      dino.x = smallRocksArray[i].x - smallRocksArray[i].width / 2 - 20;
+    } else if (
+      dino.x - 18 > smallRocksArray[i].x - smallRocksArray[i].width / 2 &&
+      dino.x - 18 < smallRocksArray[i].x + smallRocksArray[i].width / 2 &&
+      dino.y > smallRocksArray[i].y + 4
+    ) {
+      dino.x = smallRocksArray[i].x + smallRocksArray[i].width / 2 + 20;
+    }
+  }
+}
+
+function hitRocks(smallRocksArray) {
+  for (i = 0; i < smallRocksArray.length; i++) {
+    if (
+      dino.x + 18 > smallRocksArray[i].x - smallRocksArray[i].width / 2 &&
+      dino.x + 18 < smallRocksArray[i].x + smallRocksArray[i].width / 2 &&
+      dino.y > smallRocksArray[i].y + 4
+    ) {
+      dino.x = smallRocksArray[i].x - smallRocksArray[i].width / 2 - 20;
+    } else if (
+      dino.x - 18 > smallRocksArray[i].x - smallRocksArray[i].width / 2 &&
+      dino.x - 18 < smallRocksArray[i].x + smallRocksArray[i].width / 2 &&
+      dino.y > smallRocksArray[i].y + 4
+    ) {
+      dino.x = smallRocksArray[i].x + smallRocksArray[i].width / 2 + 20;
+    }
+  }
+}
+
+function moveDinosaur(canvasName, smallRocksArray) {
+  dino.x += dino.dx;
+  if (dino.x > canvasName.width - 40) {
+    dino.x = canvasName.width - 40;
+  } else if (dino.x < 40) {
+    dino.x = 40;
+  }
+
+  dino.y -= dinoJump;
+  dinoDown += dinoJump;
+  if (dinoDown === 0) {
+    dinoJump = 0;
+  } else if (dinoDown === 15 && dinoHighJump === 0) {
+    dinoJump = -1;
+  } else if (dinoDown === 30 && dinoHighJump === 1) {
+    dinoJump = -1;
+    dinoHighJump = 0;
+  }
+  moveDinoTail();
+  moveDinoLegs();
+  jumpOnRocks(smallRocksArray);
+  fallOffRocks(smallRocksArray);
+  hitRocks(smallRocksArray);
+}
+
+//GAME STARTER FUNCTIONS
+
+function fillGameArrays() {
+  fillTreesArray(gameCanvas, treesArray1);
+  fillCloudsArray(gameCanvas, cloudsArray1);
+  fillBirdsArray(gameCanvas, birdsArray1);
+  fillSmallRocksArray(gameCanvas, smallRocksArray1);
+  fillMediumRocksArray(gameCanvas, mediumRocksArray1);
+  createDinosaur(ctxGame);
+}
+fillGameArrays();
+
+function drawGame() {
+  emptyCanvas(ctxGame, gameCanvas);
+  drawEarth(ctxGame, gameCanvas);
+  drawArrayOnCanvas(ctxGame, treesArray1);
+  drawArrayOnCanvas(ctxGame, cloudsArray1);
+  drawArrayOnCanvas(ctxGame, birdsArray1);
+  drawArrayOnCanvas(ctxGame, smallRocksArray1);
+  drawArrayOnCanvas(ctxGame, mediumRocksArray1);
+  drawDinosaur(ctxGame);
+}
+
+function gameAction() {
+  drawGame();
+  moveTreesArray(gameCanvas, treesArray1);
+  moveCloudsArray(gameCanvas, cloudsArray1);
+  moveBirdsArray(gameCanvas, birdsArray1);
+  //moveSmallRocksArray(gameCanvas, smallRocksArray1);
+  moveDinosaur(gameCanvas, smallRocksArray1);
+  requestIdGame = requestAnimationFrame(gameAction);
+}
+gameAction();
+
 function keyDown(e) {
   if (e.key === "Right" || e.key === "ArrowRight") {
+    dinoTurn = 0;
     dino.dx = dino.speed;
+    walking = 1;
   } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    dinoTurn = 1;
     dino.dx = -dino.speed;
+    walking = 1;
   }
 
   if (e.key === "Up" || e.key === "ArrowUp") {
@@ -819,8 +1244,11 @@ function keyDown(e) {
     }
   }
   if (e.code === "Space" || e.code === "32") {
-    if (dinoJump == 0) {
+    if (dinoJump === 0) {
       dinoJump = 1;
+    } else if (dinoJump > 0 && dinoJump < 16) {
+      dinoJump = 1;
+      dinoHighJump = 1;
     }
   }
 }
@@ -833,6 +1261,7 @@ function keyUp(e) {
     e.key === "ArrowLeft"
   ) {
     dino.dx = 0;
+    walking = 0;
   }
   if (
     e.key === "Up" ||
