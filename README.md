@@ -1,2 +1,2 @@
 # dinosauria
-Dinosaur game
+Dinosaur game.
